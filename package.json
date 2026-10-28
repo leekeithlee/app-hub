@@ -1,0 +1,14 @@
+{
+  "name": "keith-app-hub",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local dashboard to manage Keith's web apps",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

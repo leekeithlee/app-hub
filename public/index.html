@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keith App Hub · 控制台</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Keith App Hub</h1>
+        <p class="sub">活躍連結 + <strong>每卡預設可匯出 MD</strong> 畀其他 Agent · 多範本（含資料庫）</p>
+      </div>
+      <div class="header-actions">
+        <button type="button" id="btnRefresh" class="ghost">刷新</button>
+        <button type="button" id="btnReorder" class="ghost" title="自由調整下拉清單 / 卡片次序">⇅ 調整次序</button>
+        <button type="button" id="btnSummary" class="ghost">摘要</button>
+        <button type="button" id="btnExportAll" class="ghost">匯出全部 MD</button>
+        <button type="button" id="btnNew" class="primary">+ 新 App</button>
+      </div>
+    </header>
+
+    <section class="stats" id="stats"></section>
+
+    <section class="card-picker" aria-label="快速選擇 App 卡片">
+      <label class="card-picker-label" for="cardSelect">
+        <span class="card-picker-title">快速選卡</span>
+        <span class="card-picker-hint muted">下拉揀卡 → 跳到該卡；用卡片「置頂」固定清單順序</span>
+      </label>
+      <div class="card-picker-row">
+        <select id="cardSelect" class="card-select">
+          <option value="">— 選擇 App 卡片 —</option>
+        </select>
+        <button type="button" id="btnJumpCard" class="ghost">跳到此卡</button>
+        <button type="button" id="btnOpenSelected" class="primary">開啟選中 App</button>
+      </div>
+    </section>
+
+    <section class="filters">
+      <button type="button" data-filter="all" class="chip active">全部</button>
+      <button type="button" data-filter="daily" class="chip">日常 Daily</button>
+      <button type="button" data-filter="trial" class="chip">試驗 Trial</button>
+      <button type="button" data-filter="running" class="chip">運行中</button>
+      <button type="button" data-filter="database" class="chip">有資料庫</button>
+      <input id="search" type="search" placeholder="搜尋名稱 / tag / 路徑…" />
+    </section>
+
+    <section id="reorderBar" class="reorder-bar hidden" aria-live="polite">
+      <span id="reorderStatus" class="muted"></span>
+      <span class="reorder-actions">
+        <button type="button" id="btnReorderDone" class="primary">✓ 完成排序</button>
+        <button type="button" id="btnReorderReset" class="ghost">還原置頂模式</button>
+      </span>
+    </section>
+
+    <section id="list" class="list"></section>
+
+    <footer class="foot">
+      <div>Apps 根目錄：<code>~/apps</code> · 匯出：<code>~/apps/_meta/exports/*.agent.md</code></div>
+      <div id="hubMeta" class="muted"></div>
+    </footer>
+  </div>
+
+  <!-- New app modal -->
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card wide">
+      <h2>建立新 Web App</h2>
+      <p class="muted">自動分配 port、建立資料夾、寫入 registry。可貼網址自動分析填表。</p>
+
+      <div class="url-analyze-box">
+        <div class="export-bar-label">🔗 由網頁連結自動填表（可選）</div>
+        <div class="url-analyze-row">
+          <input id="analyzeUrl" type="text" inputmode="url" placeholder="www.homeasy.hk 或 https://…（可唔加 https://）" />
+          <button type="button" id="btnAnalyzeUrl" class="primary">分析並填表</button>
+        </div>
+        <p class="meta" style="margin:6px 0 0">提示：可以只填 <code>www.homeasy.hk</code>，系統會自動加 https://</p>
+        <p id="analyzeStatus" class="meta"></p>
+      </div>
+
+      <form id="newForm">
+        <input type="hidden" name="referenceUrl" id="fieldReferenceUrl" value="" />
+        <div class="form-grid">
+          <label>英文名 / id 基礎 <input name="name" id="fieldName" required placeholder="e.g. grocery-list" /></label>
+          <label>中文名 <input name="nameZh" id="fieldNameZh" placeholder="e.g. 買餸清單" /></label>
+          <label>類別
+            <select name="category" id="fieldCategory">
+              <option value="trial">試驗 Trial（預設）</option>
+              <option value="daily">日常 Daily</option>
+            </select>
+          </label>
+          <label>生命週期
+            <select name="lifecycle" id="fieldLifecycle">
+              <option value="trial">trial 試驗中</option>
+              <option value="active">active 使用中</option>
+              <option value="archived">archived 封存</option>
+            </select>
+          </label>
+        </div>
+
+        <fieldset class="template-field">
+          <legend>App 類型 / 範本</legend>
+          <div id="templateOptions" class="template-options"></div>
+        </fieldset>
+
+        <fieldset class="template-field design-field">
+          <legend>設計與對象</legend>
+          <div class="form-grid">
+            <label>網站風格
+              <select name="siteStyle" id="fieldSiteStyle">
+                <option value="">— 請選擇 —</option>
+                <option value="minimal">簡約 Minimal</option>
+                <option value="modern">現代 Modern</option>
+                <option value="corporate">商務 Corporate</option>
+                <option value="playful">活潑 Playful</option>
+                <option value="tech">科技 Tech</option>
+                <option value="elegant">優雅 Elegant</option>
+                <option value="dashboard">儀表板 Dashboard</option>
+                <option value="content">內容／部落格 Content</option>
+                <option value="ecommerce">商店 Ecommerce</option>
+                <option value="brutalist">粗野／個性 Brutalist</option>
+              </select>
+            </label>
+            <label>顏色主調
+              <select name="colorTheme" id="fieldColorTheme">
+                <option value="">— 請選擇 —</option>
+                <option value="blue">藍色 Blue</option>
+                <option value="indigo">靛藍 Indigo</option>
+                <option value="teal">青綠 Teal</option>
+                <option value="green">綠色 Green</option>
+                <option value="orange">橙色 Orange</option>
+                <option value="red">紅色 Red</option>
+                <option value="pink">粉紅 Pink</option>
+                <option value="purple">紫色 Purple</option>
+                <option value="slate">灰藍 Slate</option>
+                <option value="dark">深色 Dark</option>
+                <option value="light">淺色 Light</option>
+                <option value="multi">多彩 Multi</option>
+              </select>
+            </label>
+            <label>網站對象
+              <select name="audience" id="fieldAudience">
+                <option value="">— 請選擇 —</option>
+                <option value="personal">自己／個人 Personal</option>
+                <option value="family">家庭 Family</option>
+                <option value="friends">朋友 Friends</option>
+                <option value="internal">內部／公司 Internal</option>
+                <option value="customers">客戶 Customers</option>
+                <option value="developers">開發者 Developers</option>
+                <option value="students">學生 Students</option>
+                <option value="public">公眾 Public</option>
+                <option value="kids">小朋友 Kids</option>
+                <option value="seniors">長輩 Seniors</option>
+              </select>
+            </label>
+            <label>主色色碼（可選）
+              <input name="primaryColor" id="fieldPrimaryColor" type="text" placeholder="#3b82f6 或留空" />
+            </label>
+          </div>
+          <p class="meta" style="margin:8px 0 0">網址分析會嘗試自動猜風格／顏色／對象；之後仍可改。</p>
+        </fieldset>
+
+        <fieldset class="template-field product-field">
+          <legend>開工單（畀 Agent / 自己）</legend>
+          <label>目標一句 Goal *
+            <input name="goal" id="fieldGoal" placeholder="e.g. 一站式家居服務預約清單 MVP" />
+          </label>
+          <label>下一步 Next task
+            <input name="nextTask" id="fieldNextTask" placeholder="e.g. 做出首頁 + 服務列表 + 預約表單骨架" />
+          </label>
+          <label>優先級
+            <select name="priority" id="fieldPriority">
+              <option value="P0">P0 緊急</option>
+              <option value="P1" selected>P1 正常</option>
+              <option value="P2">P2 可延後</option>
+            </select>
+          </label>
+          <label>今次範圍 In scope（每行一項）
+            <textarea name="inScope" id="fieldInScope" rows="3" placeholder="首頁&#10;服務列表&#10;聯絡表單"></textarea>
+          </label>
+          <label>不做 Out of scope（每行一項）
+            <textarea name="outOfScope" id="fieldOutOfScope" rows="2" placeholder="登入系統&#10;付款&#10;上雲"></textarea>
+          </label>
+          <label>驗收標準 Acceptance（每行一條）
+            <textarea name="acceptance" id="fieldAcceptance" rows="3" placeholder="./start.sh 可開&#10;手機 Tailscale 打得開&#10;主色同風格符合設定"></textarea>
+          </label>
+          <label>🗺 Site map（每行：path + 名稱）
+            <textarea name="siteMap" id="fieldSiteMap" rows="5" placeholder="/ 首頁&#10;/services 服務&#10;/contact 聯絡"></textarea>
+          </label>
+          <p class="meta">網址分析會由導航自動估 site map；單頁 app 可只留 <code>/ 首頁</code>。</p>
+        </fieldset>
+
+        <fieldset class="template-field tech-field">
+          <legend>參考站技術分析（自動／可改）</legend>
+          <div class="form-grid">
+            <label>Coding language
+              <input name="codingLanguage" id="fieldCodingLanguage" placeholder="e.g. PHP / JavaScript" />
+            </label>
+            <label>Database (guess)
+              <input name="refDatabase" id="fieldRefDatabase" placeholder="e.g. MySQL / unknown" />
+            </label>
+          </div>
+          <label>Frameworks / CMS
+            <input name="refFrameworks" id="fieldRefFrameworks" placeholder="e.g. WordPress, jQuery" />
+          </label>
+          <label>技術摘要（完整）
+            <textarea name="techSummary" id="fieldTechSummary" rows="5" placeholder="分析網址後會自動填：語言、框架、DB 推斷、CDN…"></textarea>
+          </label>
+          <input type="hidden" name="refTechJson" id="fieldRefTechJson" value="" />
+          <p class="meta">由公開 HTML/HTTP header 指紋推斷；DB 多數唔公開，只供開發規劃。會寫入 <code>TECH.md</code>。</p>
+        </fieldset>
+
+        <label>簡介 <textarea name="description" id="fieldDescription" rows="2" placeholder="呢個 app 做咩…"></textarea></label>
+        <label>Tags（逗號分隔） <input name="tags" id="fieldTags" placeholder="e.g. todo, home, demo" /></label>
+        <label>備註（給自己 / agent） <textarea name="notes" id="fieldNotes" rows="3" placeholder="可選"></textarea></label>
+
+        <div class="modal-actions">
+          <button type="button" class="ghost" id="btnCancel">取消</button>
+          <button type="submit" class="primary">建立 + 自動匯出 AGENT.md</button>
+        </div>
+      </form>
+      <p id="formError" class="error"></p>
+    </div>
+  </div>
+
+  <!-- Summary modal -->
+  <div id="summaryModal" class="modal hidden">
+    <div class="modal-card wide">
+      <h2>App 摘要</h2>
+      <pre id="summaryBody" class="summary"></pre>
+      <div class="modal-actions">
+        <button type="button" class="ghost" id="btnCopySummary">複製</button>
+        <button type="button" class="primary" id="btnCloseSummary">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export result modal -->
+  <div id="exportModal" class="modal hidden">
+    <div class="modal-card wide">
+      <h2>已匯出給 Agent</h2>
+      <p class="muted" id="exportMsg"></p>
+      <pre id="exportPaths" class="summary"></pre>
+      <div class="modal-actions">
+        <button type="button" class="ghost" id="btnCopyExport">複製路徑</button>
+        <button type="button" class="primary" id="btnCloseExport">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
