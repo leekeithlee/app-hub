@@ -708,3 +708,100 @@ option.bottom-opt {
   color: #94a3b8;
   font-style: italic;
 }
+
+/* ── Tailscale entry on every card ─────────────────────────────────── */
+.ts-entry{
+  margin-top:10px;border:1px solid rgba(90,170,255,.26);border-radius:12px;
+  background:linear-gradient(180deg,rgba(24,52,96,.5),rgba(18,32,66,.34));
+  padding:10px 12px;
+}
+.ts-entry-head{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.ts-dot{width:7px;height:7px;border-radius:50%;flex:none;
+  background:#4fc3f7;box-shadow:0 0 9px #4fc3f7}
+.ts-label{font-size:12px;font-weight:600;color:#d7e9ff;letter-spacing:.02em}
+.ts-badge{font-size:9px;letter-spacing:.1em;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  color:#8fd0ff;border:1px solid rgba(79,195,247,.4);border-radius:999px;padding:1px 7px;
+  background:rgba(79,195,247,.1)}
+.ts-entry-body{display:flex;flex-wrap:wrap;align-items:center;gap:9px}
+.ts-url{font-size:12px;color:#9fd4ff;text-decoration:none;word-break:break-all;flex:1;min-width:0;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.ts-url:hover{text-decoration:underline}
+.ts-entry-actions{display:flex;gap:6px;flex:none}
+.ts-entry-actions .sm{font-size:11px;padding:4px 10px}
+[hidden]{display:none!important}
+.ts-qr{flex-basis:100%;margin-top:8px;display:flex;justify-content:center}
+.ts-qr img{width:180px;height:180px;image-rendering:pixelated;border-radius:8px;
+  background:#fff;padding:6px;box-shadow:0 8px 24px -8px rgba(0,0,0,.6)}
+@media (max-width:640px){
+  .ts-entry-body{flex-direction:column;align-items:stretch}
+  .ts-entry-actions{justify-content:flex-start}
+}
+
+/* ══ Delete app: two-step confirmation ═════════════════════════════ */
+.danger-modal{max-width:560px;width:100%}
+.danger-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.danger-mark{font-size:26px;line-height:1;flex:none;color:#ff6b6b;
+  filter:drop-shadow(0 0 10px rgba(255,107,107,.55))}
+.danger-head h2{margin:0 0 4px;font-size:19px;color:#fff}
+.danger-head .muted{margin:0;font-size:12.5px;line-height:1.6}
+
+.del-preview{border:1px solid rgba(255,107,107,.28);border-radius:12px;
+  background:rgba(60,20,28,.3);padding:12px 14px;margin-bottom:16px}
+.del-stats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:9px}
+.del-stat{border:1px solid rgba(255,140,140,.3);border-radius:9px;padding:6px 11px;
+  background:rgba(255,107,107,.09);min-width:74px}
+.del-stat b{display:block;font-size:16px;color:#ffd0d0;line-height:1.2}
+.del-stat span{font-size:9.5px;letter-spacing:.09em;color:rgba(255,200,200,.72);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.del-path{font-size:11.5px;color:rgba(255,220,220,.9);word-break:break-all;margin-bottom:7px}
+.del-path code{background:rgba(0,0,0,.3);padding:2px 6px;border-radius:5px;font-size:11px}
+.del-largest{list-style:none;padding:0;margin:0 0 4px;font-size:11px;
+  color:rgba(255,220,220,.78);display:flex;flex-direction:column;gap:3px}
+.del-largest li{display:flex;justify-content:space-between;gap:12px}
+.del-largest li span:last-child{color:rgba(255,190,190,.6);font-family:ui-monospace,Menlo,monospace;flex:none}
+.del-warn{margin-top:8px;padding:8px 11px;border-radius:9px;font-size:11.5px;line-height:1.6;
+  background:rgba(255,80,80,.16);border:1px solid rgba(255,107,107,.42);color:#ffd6d6}
+
+.del-step{margin-bottom:13px}
+.del-step label{display:block;font-size:12px;color:rgba(255,235,235,.9);margin-bottom:6px}
+.del-step label code{background:rgba(255,107,107,.16);border:1px solid rgba(255,107,107,.32);
+  padding:1px 7px;border-radius:5px;color:#ffd0d0;font-size:11.5px}
+.del-step input{width:100%;padding:11px 13px;border-radius:10px;font-size:14px;
+  border:1px solid rgba(255,107,107,.4);background:rgba(20,10,14,.6);color:#fff;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.del-step input:focus{outline:none;border-color:#ff8a8a;box-shadow:0 0 0 3px rgba(255,107,107,.18)}
+.del-step input:disabled{opacity:.5}
+
+#btnDelConfirm:disabled{opacity:.45;cursor:not-allowed}
+@media (max-width:520px){
+  .danger-modal{max-height:92dvh;overflow-y:auto}
+  .del-stat{flex:1;min-width:68px}
+}
+
+/* ══ Tailscale quick-open in the card picker ═══════════════════════ */
+.ts-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  border:1px solid rgba(79,195,247,.55);border-radius:10px;
+  background:linear-gradient(180deg,rgba(24,74,120,.55),rgba(16,44,76,.4));
+  color:#a9e0ff;font-size:13px;font-weight:600;letter-spacing:.02em;
+  padding:8px 14px;cursor:pointer;font-family:inherit;white-space:nowrap;
+  transition:.18s;
+}
+.ts-btn:hover{border-color:#4fc3f7;color:#d5f2ff;
+  box-shadow:0 0 18px -4px rgba(79,195,247,.65)}
+.ts-btn:active{transform:scale(.97)}
+.ts-btn:disabled{opacity:.45;cursor:not-allowed}
+
+@media (max-width:640px){
+  .ts-btn{padding:9px 12px;font-size:12.5px}
+}
+
+/* The app chosen in the quick-select picker is highlighted on its card. */
+.card.is-selected{border-color:rgba(79,195,247,.55);
+  box-shadow:0 0 0 2px rgba(79,195,247,.22),0 18px 40px -22px rgba(0,0,0,.8)}
+.card.is-selected::after{content:"📱";position:absolute;top:10px;right:12px;font-size:13px;opacity:.75}
+
+/* Picker buttons are disabled until an app is chosen. */
+#btnJumpCard:disabled,#btnOpenSelected:disabled{opacity:.42;cursor:not-allowed}
+#btnJumpCard:disabled:hover,#btnOpenSelected:disabled:hover{
+  border-color:var(--line,rgba(150,175,255,.16));background:transparent}

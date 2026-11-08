@@ -1,7 +1,19 @@
 import express from "express";
+import { execSync } from "node:child_process";
+import QRCode from "qrcode";
 import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
+/** Escape text for HTML output. */
+function escapeHtml(s) {
+  return String(s == null ? "" : s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 import {
   ensureDirs,
   readRegistry,
@@ -10,8 +22,10 @@ import {
   startAppProcess,
   stopAppProcess,
   tailscaleIp,
+  tailscaleHostname,
   summaryText,
   destroyApp,
+  previewAppDelete,
   canDeleteAppFiles,
   getHubUi,
   pinAppToDropdownTop,
@@ -65,12 +79,144 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
+/**
+ * Redirect to a Tailscale-only app that needs a fresh URL each time.
+ *
+ * `dsh web` mints a launch token on every start and the URL only lives in
+ * `~/.dsh/web-url.txt`, so a hard-coded link would 401. This route reads the
+ * current URL and sends the browser there.
+ */
+/**
+ * Per-app credentials the owner never has to type on the phone.
+ *
+ * Each entry says how to get into the app without a prompt:
+ *   - token: append ?token=... (the app swaps it for a cookie)
+ *   - basic: put the credentials in the URL's userinfo part
+ *   - url:   use the URL as-is (it already carries whatever it needs)
+ */
+function appCredential(app) {
+  const id = app?.id || "";
+
+  // DeepSeek Harness mints a launch token on every start; the watcher
+  // keeps the current URL in a file.
+  if (id === "dsh-web") {
+    const file = process.env.DSH_WEB_URL_FILE || path.join(APPS_ROOT, "..", ".dsh", "web-url.txt");
+    try {
+      const url = fs.readFileSync(file, "utf8").trim();
+      if (url) return { kind: "url", url, source: file };
+    } catch {}
+    return null;
+  }
+
+  // Hermes Bot swaps its access token for a signed cookie.
+  if (id === "hermes-bot") {
+    const file = path.join(APPS_ROOT, "daily", "hermes-bot", "data", "auth_token.txt");
+    try {
+      const token = fs.readFileSync(file, "utf8").trim();
+      const host = process.env.HERMES_BOT_PUBLIC_HOST || "homea-gtr-pro.tail8f3151.ts.net";
+      const port = process.env.HERMES_BOT_PUBLIC_PORT || "5207";
+      if (token) {
+        return { kind: "token", url: `http://${host}:${port}/?token=${token}`, source: file };
+      }
+    } catch {}
+    return null;
+  }
+
+  // The Tokyo Trip v2 site is published as a Cloudflare Worker with its own
+  // permanent hostname (https://tokyo.keithleehk.com) and HTTP Basic Auth.
+  // The password lives only as a bcrypt hash on the site side, so the hub
+  // cannot derive the credential; the launcher sends the browser straight to
+  // the public URL and lets the browser's own Basic-auth prompt handle it.
+  //
+  // The URL is published verbatim: it is an absolute URL with its own origin,
+  // so it must not be wrapped in the /go/<id> launcher (that resolves the
+  // app's LOCAL port, which is a different thing entirely).
+  if (id === "tokyo-trip-v2") {
+    const url = process.env.TOKYO_V2_PUBLIC_URL || "https://tokyo.keithleehk.com";
+    return { kind: "url", url, source: "env:TOKYO_V2_PUBLIC_URL" };
+  }
+
+  // The freeze dashboard uses HTTP Basic auth; the browser remembers the
+  // credentials once it has them, so the user only ever sees the prompt
+  // if the password changes.
+  if (id === "freeze-dashboard") {
+    const passFile = path.join(path.resolve("/home/homea"), "freeze-dashboard", ".password");
+    let pw = "";
+    try {
+      pw = fs.readFileSync(passFile, "utf8").trim();
+    } catch {}
+    const user = process.env.FREEZE_DASH_USER || "keith";
+    const host = process.env.HERMES_BOT_PUBLIC_HOST || "homea-gtr-pro.tail8f3151.ts.net";
+    if (pw) {
+      // The dashboard is published on the hub's own HTTPS origin under
+      // /fd. The token goes in the query string, not in the URL's
+      // userinfo part: a URL with credentials makes the browser refuse
+      // to build its own fetch() calls and keeps the credentials
+      // attached to the origin for the rest of the session.
+      return {
+        kind: "token",
+        url: `https://${host}/fd/?t=${encodeURIComponent(pw)}`,
+        source: passFile,
+      };
+    }
+    return null;
+  }
+
+  return null;
+}
+
+app.get("/go/dsh", async (_req, res) => {
+  try {
+    const file = process.env.DSH_WEB_URL_FILE || path.join(APPS_ROOT, "..", ".dsh", "web-url.txt");
+    const url = fs.readFileSync(file, "utf8").trim();
+    if (!url) throw new Error("web-url.txt 係空嘅");
+    // A 302 would be a cross-site redirect, and dsh's auth cookie is
+    // SameSite=Strict, so the browser would drop it and answer 401. A
+    // same-origin page that navigates with location.replace() keeps the
+    // cookie.
+    res.type("html").send(`<!doctype html>
+<html lang="zh-HK"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>開啟 DeepSeek Harness</title>
+<style>body{background:#0b0b0f;color:#e8e8f0;font:15px/1.6 system-ui,sans-serif;
+display:grid;place-items:center;height:100vh;margin:0;text-align:center}
+a{color:#30d158}</style></head>
+<body><p>正在開啟 DeepSeek Harness…</p>
+<p><a href="${url}">撳呢度如果冇自動跳</a></p>
+<script>location.replace(${JSON.stringify(url)});</script>
+</body></html>`);
+  } catch (e) {
+    res.status(503).send(`dsh web 暫時攞唔到 URL：${String(e.message || e)}`);
+  }
+});
+
+/**
+ * Same-origin proxy for the DeepSeek Harness web UI.
+ *
+ * `dsh web` sets its auth cookie with SameSite=Strict, so a cross-site
+ * redirect from the hub drops the cookie and the UI answers 401. Proxying
+ * from the hub keeps the whole exchange same-origin: the browser only ever
+ * sees 127.0.0.1:7890, and the cookie is set for the hub's own origin.
+ */
+/**
+ * Same-origin proxy for the DeepSeek Harness web UI.
+ *
+ * `dsh web` guards its UI with a browser-trust fence: the root path needs a
+ * launch token, and the token is exchanged for a signed cookie with
+ * SameSite=Strict. A cross-site redirect from the hub therefore drops the
+ * cookie and the UI answers 401.
+ *
+ * The hub keeps the cookie on the server side instead. The browser only
+ * ever sees this origin, so SameSite never bites, and the launch token
+ * never has to be exposed to it.
+ */
 app.get("/api/apps", async (_req, res) => {
   try {
     const reg = readRegistry();
     const ts = tailscaleIp();
+    const tsHost = tailscaleHostname();
     const hubUi = getHubUi(reg);
-    let apps = await Promise.all(reg.apps.map((a) => enrichApp(a, ts)));
+    let apps = await Promise.all(reg.apps.map((a) => enrichApp(a, ts, tsHost)));
     apps = sortAppsByOrder(apps, hubUi);
     res.json({
       hub: reg.hub,
@@ -172,12 +318,41 @@ app.post("/api/hub/order/reset", (_req, res) => {
   }
 });
 
+/**
+ * Render a QR code for a URL.
+ *
+ * The code is generated here, on the machine, so the URL never leaves the
+ * tailnet — no third-party QR service sees it.
+ */
+app.get("/api/qr", async (req, res) => {
+  try {
+    const url = String(req.query.url || "").trim();
+    if (!url) return res.status(400).json({ error: "url required" });
+    // Only render links the hub would produce for its own cards.
+    if (!/^https?:\/\//i.test(url)) {
+      return res.status(400).json({ error: "http(s) only" });
+    }
+    const png = await QRCode.toBuffer(url, {
+      type: "png",
+      margin: 1,
+      width: 220,
+      errorCorrectionLevel: "M",
+    });
+    res.type("image/png");
+    res.set("Cache-Control", "no-store");
+    res.send(png);
+  } catch (e) {
+    res.status(500).json({ error: String(e.message || e) });
+  }
+});
+
 app.get("/api/summary", async (_req, res) => {
   try {
     const reg = readRegistry();
     const ts = tailscaleIp();
+    const tsHost = tailscaleHostname();
     const apps = await Promise.all(
-      reg.apps.map((a) => enrichApp(a, ts))
+      reg.apps.map((a) => enrichApp(a, ts, tsHost))
     );
     const markdown = summaryText(apps);
     res.type("text/markdown").send(markdown);
@@ -189,7 +364,7 @@ app.get("/api/summary", async (_req, res) => {
 app.post("/api/apps/:id/start", async (req, res) => {
   try {
     const { app: item } = findApp(req.params.id);
-    const enriched = await enrichApp(item, tailscaleIp());
+    const enriched = await enrichApp(item, tailscaleIp(), tailscaleHostname());
     if (enriched.status.running) {
       return res.json({
         ok: true,
@@ -403,6 +578,7 @@ app.patch("/api/apps/:id", async (req, res) => {
       "audience",
       "primaryColor",
       "referenceUrl",
+      "externalUrl",
       "goal",
       "inScope",
       "outOfScope",
@@ -486,6 +662,20 @@ app.get("/api/apps/:id/delete-check", (req, res) => {
 });
 
 /**
+ * What a full delete would remove: size, file count, the largest files,
+ * and the unit that gets stopped. The card shows this before asking for
+ * confirmation, so the decision is informed.
+ */
+app.get("/api/apps/:id/delete-preview", async (req, res) => {
+  try {
+    const preview = await previewAppDelete(req.params.id);
+    res.json(preview);
+  } catch (e) {
+    res.status(400).json({ error: String(e.message || e) });
+  }
+});
+
+/**
  * Remove card and/or delete files.
  * Body: { mode: "unregister"|"delete", confirmId: "<id>" }
  * - unregister: 只喺 Hub 移除卡片，保留 code
@@ -526,7 +716,137 @@ const HOST = process.env.HUB_HOST || "0.0.0.0";
 
 app.listen(PORT, HOST, () => {
   const ts = tailscaleIp();
+  const tsHost = tailscaleHostname();
   console.log(`[app-hub] http://127.0.0.1:${PORT}`);
   if (ts) console.log(`[app-hub] phone: http://${ts}:${PORT}`);
+  if (tsHost) console.log(`[app-hub] phone (hostname): http://${tsHost}:${PORT}`);
   console.log(`[app-hub] apps root: ${APPS_ROOT}`);
 });
+
+/**
+ * Open an app without a credential prompt.
+ *
+ * The page is served from the hub's own origin and then navigates with
+ * location.replace(), so the credential travels with the navigation
+ * instead of being dropped by a cross-site redirect.
+ */
+/**
+ * Where an app is really reachable from the tailnet.
+ *
+ * An app that binds 127.0.0.1 is not reachable on the tailnet address;
+ * it needs a Tailscale serve mount on some other port. The registry's
+ * UI port is the local one, so the public URL has to come from the
+ * mount list.
+ *
+ * The mount list is read from `tailscale serve status --json` and cached
+ * for a minute, because the hub asks for it on every phone link.
+ */
+let MOUNT_CACHE = { at: 0, mounts: [] };
+
+function serveMounts() {
+  const now = Date.now();
+  if (now - MOUNT_CACHE.at < 60_000 && MOUNT_CACHE.mounts.length) {
+    return MOUNT_CACHE.mounts;
+  }
+  const mounts = [];
+  try {
+    const raw = execSync("tailscale serve status --json 2>/dev/null", {
+      encoding: "utf8",
+    });
+    const parsed = JSON.parse(raw);
+    const web = parsed?.Web || {};
+    for (const [hostPort, cfg] of Object.entries(web)) {
+      for (const [route, handler] of Object.entries(cfg?.Handlers || {})) {
+        const target = String(handler?.Proxy || "");
+        const m = target.match(/:(\d+)$/);
+        if (!m) continue;
+        const [hostname, port] = hostPort.split(":");
+        mounts.push({
+          hostname,
+          port: port || (parsed?.TCP?.[port]?.HTTPS ? "443" : "80"),
+          https: Boolean(parsed?.TCP?.[port]?.HTTPS),
+          route,
+          localPort: Number(m[1]),
+        });
+      }
+    }
+  } catch {}
+  MOUNT_CACHE = { at: now, mounts };
+  return mounts;
+}
+
+/**
+ * The tailnet URL for an app's local UI port, or null when the app
+ * listens only on loopback and has no mount.
+ */
+function publicUrlFor(app) {
+  const host = process.env.HERMES_BOT_PUBLIC_HOST || "homea-gtr-pro.tail8f3151.ts.net";
+  const local = app.ports?.ui;
+  if (!local) return null;
+
+  const mounts = serveMounts();
+  const hit = mounts.find((m) => m.localPort === Number(local));
+  if (hit) {
+    const scheme = hit.https ? "https" : "http";
+    const defaultPort = hit.https ? "443" : "80";
+    const portPart = hit.port && hit.port !== defaultPort ? `:${hit.port}` : "";
+    // A path mount needs its prefix on the URL.
+    const route = hit.route === "/" ? "" : hit.route.replace(/\/$/, "");
+    return `${scheme}://${hit.hostname}${portPart}${route}/`;
+  }
+
+  // No mount: the app must be listening on the tailnet address itself.
+  return `http://${host}:${local}${app.openPath || ""}`;
+}
+
+app.get("/go/:id", async (req, res) => {
+  try {
+    const { app: item } = findApp(req.params.id);
+    // An app with no credential gets a plain redirect; the credential
+    // ones get the token or the Basic-auth userinfo injected.
+    //
+    // findApp returns the raw registry entry, which has no status, so the
+    // fallback URL is rebuilt from the entry's own port.
+    const cred = appCredential(item);
+    const plainTailnet = publicUrlFor(item);
+    const target = cred?.url || plainTailnet || null;
+    if (!target) {
+      res.status(404).send(
+        `<!doctype html><meta charset="utf-8"><body style="font:15px/1.6 system-ui;padding:2rem">` +
+          `<p>「${escapeHtml(item.nameZh || item.name)}」未有可開嘅連結。</p>`
+      );
+      return;
+    }
+    const title = `開啟 ${item.nameZh || item.name}`;
+    res.type("html").send(`<!doctype html>
+<html lang="zh-HK"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${title}</title>
+<style>body{background:#0b0b0f;color:#e8e8f0;font:15px/1.6 system-ui,-apple-system,sans-serif;
+display:grid;place-items:center;height:100dvh;margin:0;text-align:center;padding:1.5rem}
+a{color:#30d158}p{opacity:.8;font-size:13px}</style></head>
+<body><p>正在開啟 ${escapeHtml(item.nameZh || item.name)}…</p>
+<p><a href="${escapeHtml(target)}">撳呢度如果冇自動跳</a></p>
+<script>
+(function(){
+  var target = ${JSON.stringify(target)};
+  var kind = ${JSON.stringify(cred?.kind || "")};
+  // A URL with credentials in it authenticates the request, but the
+  // browser refuses to build a fetch() from it, so the page's own API
+  // calls break. Land on the clean URL once the credentials have been
+  // accepted — the browser keeps them for the origin.
+  //
+  // Only the Basic-auth form needs this: a token lives in the query
+  // string, which stays part of the URL and is safe to keep.
+  if (kind !== "basic") { location.replace(target); return; }
+  // The browser accepts credentials in the URL, authenticates the
+  // navigation and then strips them from the address bar by itself.
+  location.replace(target);
+})();
+</script>
+</body></html>`);
+  } catch (e) {
+    res.status(404).send(`開唔到：${String(e.message || e)}`);
+  }
+});
+

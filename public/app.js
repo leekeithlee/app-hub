@@ -65,8 +65,20 @@ function sortByPin(apps) {
   });
 }
 
+// The hub is reachable at "/" and behind a Tailscale serve path mount
+// ("/hub/"). Absolute "/api/..." paths break under the mount, so every API
+// call goes through this helper, which keeps the mount prefix.
+function apiBase() {
+  const p = window.location.pathname;
+  const i = p.lastIndexOf("/");
+  // "/" → "" ; "/hub/" → "/hub"
+  return i > 0 ? p.slice(0, i) : "";
+}
+
 async function api(path, opts) {
-  const res = await fetch(path, {
+  const base = apiBase();
+  const url = path.startsWith("/") && base ? base + path : path;
+  const res = await fetch(url, {
     headers: { "Content-Type": "application/json" },
     ...opts,
   });
@@ -161,6 +173,7 @@ function renderCardSelect() {
     // default highlight top-pinned in select (not force-select empty)
     state.selectedCardId = state.selectedCardId || "";
   }
+  updatePickerButtons();
 }
 
 function jumpToCard(id) {
@@ -168,6 +181,9 @@ function jumpToCard(id) {
   state.selectedCardId = id;
   const sel = el("cardSelect");
   if (sel) sel.value = id;
+  document.querySelectorAll(".card.is-selected").forEach((c) => c.classList.remove("is-selected"));
+  document.querySelector(`.card[data-id="${CSS.escape(id)}"]`)?.classList.add("is-selected");
+  updatePickerButtons();
   const cardEl = document.querySelector(`.card[data-id="${CSS.escape(id)}"]`);
   if (!cardEl) {
     // may be filtered out — clear filters and retry once
@@ -195,10 +211,21 @@ function jumpToCard(id) {
   setTimeout(() => cardEl.classList.remove("card-flash"), 1200);
 }
 
+/** Is this link a Tailscale hostname (rather than a raw tailnet IP)? */
+function isTsHost(url) {
+  try {
+    const u = new URL(url);
+    return !/^\d+\.\d+\.\d+\.\d+$/.test(u.hostname);
+  } catch {
+    return false;
+  }
+}
+
 function card(a) {
   const run = a.status?.running;
   const open = a.status?.openUrl;
   const phone = a.status?.phoneUrl;
+  const external = a.status?.externalUrl;
   const canStart = Boolean(a.startCmd && a.pathExists);
   const canStop = Boolean(a.stopCmd || a.ports?.ui || a.ports?.api);
   const hasLink = Boolean(open);
@@ -215,9 +242,39 @@ function card(a) {
       </a>
       ${
         phone
-          ? `<div class="link-hero-phone">
-               <span class="muted">手機 Tailscale</span>
-               <a href="${escapeHtml(phone)}" target="_blank" rel="noopener">${escapeHtml(phone)}</a>
+          ? `<div class="ts-entry">
+               <div class="ts-entry-head">
+                 <span class="ts-dot"></span>
+                 <span class="ts-label">Tailscale 入口</span>
+                 <span class="ts-badge">${isTsHost(phone) ? "HOSTNAME" : "TAILNET IP"}</span>
+               </div>
+               <div class="ts-entry-body">
+                 <a class="ts-url" href="${escapeHtml(phone)}">${escapeHtml(phone)}</a>
+                 <div class="ts-entry-actions">
+                   <button type="button" data-act="copy-link" class="ghost sm" data-link="${escapeHtml(phone)}">複製</button>
+                   <button type="button" data-act="ts-qr" class="ghost sm" data-link="${escapeHtml(phone)}">QR 碼</button>
+                 </div>
+                 <div class="ts-qr" hidden><img alt="Tailscale QR" loading="lazy"></div>
+               </div>
+             </div>`
+          : ""
+      }
+      ${
+        external
+          ? `<div class="ts-entry">
+               <div class="ts-entry-head">
+                 <span class="ts-dot"></span>
+                 <span class="ts-label">公開網址</span>
+                 <span class="ts-badge">PUBLIC</span>
+               </div>
+               <div class="ts-entry-body">
+                 <a class="ts-url" href="${escapeHtml(external)}" target="_blank" rel="noopener">${escapeHtml(external)}</a>
+                 <div class="ts-entry-actions">
+                   <button type="button" data-act="copy-link" class="ghost sm" data-link="${escapeHtml(external)}">複製</button>
+                   <button type="button" data-act="ts-qr" class="ghost sm" data-link="${escapeHtml(external)}">QR 碼</button>
+                 </div>
+                 <div class="ts-qr" hidden><img alt="Public URL QR" loading="lazy"></div>
+               </div>
              </div>`
           : ""
       }
@@ -228,7 +285,17 @@ function card(a) {
             ? `<a class="button big" href="${escapeHtml(phone)}" target="_blank" rel="noopener">手機開啟</a>`
             : ""
         }
+        ${
+          external
+            ? `<a class="button big" href="${escapeHtml(external)}" target="_blank" rel="noopener">🌐 公開網址</a>`
+            : ""
+        }
         <button type="button" data-act="copy-link" class="ghost" data-link="${escapeHtml(open)}">複製連結</button>
+        ${
+          external
+            ? `<button type="button" data-act="copy-link" class="ghost" data-link="${escapeHtml(external)}">複製公開網址</button>`
+            : ""
+        }
         ${
           !run && canStart
             ? `<button type="button" data-act="start" class="ghost">先啟動</button>`
@@ -238,13 +305,48 @@ function card(a) {
     </div>`
     : `
     <div class="link-hero is-missing">
-      <div class="link-hero-label">⚠️ 未設定活躍連結</div>
-      <div class="meta">呢個 app 未登記 UI port，所以冇開啟網址。喺 registry 加 <code>ports.ui</code> 同 <code>startCmd</code> 就會出現。</div>
+      <div class="link-hero-label">${external ? "🔗 官方網頁版" : "⚠️ 未設定活躍連結"}</div>
+      <div class="meta">${
+        external
+          ? `呢個 app 冇本機 web 介面（桌面程式／雲端 SaaS）。手機可以直接開官方網頁版。`
+          : `呢個 app 未登記 UI port，所以冇開啟網址。喺 registry 加 <code>ports.ui</code> 同 <code>startCmd</code> 就會出現。`
+      }</div>
       ${
-        canStart
-          ? `<div class="link-hero-actions"><button type="button" data-act="start">啟動</button></div>`
+        external
+          ? `<div class="link-hero-body">
+               <a class="link-hero-url" href="${escapeHtml(external)}" target="_blank" rel="noopener">${escapeHtml(external)}</a>
+             </div>`
           : ""
       }
+      <div class="link-hero-actions">
+        ${
+          external
+            ? `<a class="button primary big" href="${escapeHtml(external)}" target="_blank" rel="noopener">開啟網頁版</a>
+               <button type="button" data-act="copy-link" class="ghost" data-link="${escapeHtml(external)}">複製連結</button>`
+            : ""
+        }
+        ${
+          canStart
+            ? `<button type="button" data-act="start" ${external ? 'class="ghost"' : ""}>${external ? "啟動桌面程式" : "啟動"}</button>`
+            : ""
+        }
+      </div>
+    </div>`;
+
+  // The destructive actions live on the card itself, not inside the
+  // collapsed build-info section: deleting an app should not require
+  // hunting for it.
+  const dangerBlock = `
+    <div class="danger-zone">
+      <div class="danger-title">危險操作</div>
+      <div class="actions">
+        <button type="button" data-act="unregister" class="ghost danger-outline">移除卡片</button>
+        <button type="button" data-act="delete" class="danger">永久刪除整個 App</button>
+      </div>
+      <div class="meta danger-hint">
+        移除卡片＝只係 Hub 唔再顯示，code 保留。<br/>
+        永久刪除＝停止服務 + 刪 registry + <strong>刪除整個資料夾</strong>（code + data，唔可復原）。會有兩步確認。
+      </div>
     </div>`;
 
   const exportBar = `
@@ -254,7 +356,7 @@ function card(a) {
         <button type="button" data-act="export-md" data-mode="full" class="button primary">匯出 Full MD</button>
         <button type="button" data-act="export-md" data-mode="brief" class="ghost">Brief</button>
         <button type="button" data-act="export-md" data-mode="prompt" class="ghost">Prompt 檔</button>
-        <a class="button" href="/api/apps/${encodeURIComponent(a.id)}/export.md?mode=full" download="${escapeHtml(a.id)}.agent.md">下載 Full</a>
+        <a class="button" href="${apiBase()}/api/apps/${encodeURIComponent(a.id)}/export.md?mode=full" download="${escapeHtml(a.id)}.agent.md">下載 Full</a>
       </div>
       <div class="meta export-bar-hint">
         Full → <code>AGENT.md</code> + <code>_meta/exports/${escapeHtml(a.id)}.agent.md</code>
@@ -484,19 +586,10 @@ function card(a) {
           <button type="button" data-act="copy-path" class="ghost">複製路徑</button>
           <button type="button" data-act="log" class="ghost">Log</button>
         </div>
-        <div class="danger-zone">
-          <div class="danger-title">危險操作</div>
-          <div class="actions">
-            <button type="button" data-act="unregister" class="ghost danger-outline">移除卡片</button>
-            <button type="button" data-act="delete" class="danger">刪除 App（code+data）</button>
-          </div>
-          <div class="meta danger-hint">
-            移除卡片＝只係 Hub 唔再顯示，code 保留。<br/>
-            刪除 App＝停止服務 + 刪 registry + <strong>永久刪除資料夾</strong>（唔可復原）。
-          </div>
-        </div>
       </div>
     </details>
+
+    ${dangerBlock}
   </article>`;
 }
 
@@ -773,9 +866,18 @@ el("list").addEventListener("click", async (e) => {
       const link = btn.dataset.link || state.apps.find((a) => a.id === id)?.status?.openUrl;
       if (link) {
         await navigator.clipboard.writeText(link);
+        const was = btn.textContent;
         btn.textContent = "已複製連結";
-        setTimeout(() => (btn.textContent = "複製連結"), 1200);
+        setTimeout(() => (btn.textContent = was), 1200);
       }
+    } else if (act === "ts-qr") {
+      const link = btn.dataset.link;
+      const box = btn.closest(".ts-entry")?.querySelector(".ts-qr");
+      if (!link || !box) return;
+      if (!box.hidden) { box.hidden = true; return; }
+      const img = box.querySelector("img");
+      img.src = `${apiBase()}/api/qr?url=${encodeURIComponent(link)}`;
+      box.hidden = false;
     } else if (act === "copy-path") {
       const app = state.apps.find((a) => a.id === id);
       if (app?.path) {
@@ -784,7 +886,7 @@ el("list").addEventListener("click", async (e) => {
         setTimeout(() => (btn.textContent = "複製路徑"), 1200);
       }
     } else if (act === "log") {
-      const res = await fetch(`/api/apps/${id}/log`);
+      const res = await fetch(`${apiBase()}/api/apps/${id}/log`);
       const text = await res.text();
       alert(text.slice(-3000) || "(empty)");
     } else if (act === "export-md") {
@@ -917,44 +1019,7 @@ el("list").addEventListener("click", async (e) => {
       });
       await refresh();
     } else if (act === "delete") {
-      const app = state.apps.find((a) => a.id === id);
-      const name = app?.nameZh || app?.name || id;
-      const pathStr = app?.path || "—";
-      const ok1 = confirm(
-        `⚠️ 永久刪除 Web App「${name}」？\n\n` +
-          `會做：\n` +
-          `1. 停止服務\n` +
-          `2. 從 Hub 移除卡片\n` +
-          `3. 刪除整個資料夾（code + data）\n\n` +
-          `路徑：${pathStr}\n\n` +
-          `呢個操作唔可以復原！`
-      );
-      if (!ok1) return;
-      const typed = prompt(
-        `最後確認：請輸入 app id 先至刪除\n\n要輸入：${id}`
-      );
-      if (typed !== id) {
-        alert("id 唔啱，已取消刪除。");
-        return;
-      }
-      const phrase = prompt(
-        `再確認：請輸入大階 DELETE 先至永久刪除\n\n路徑：${pathStr}`
-      );
-      if (phrase !== "DELETE") {
-        alert("確認字唔啱，已取消刪除。");
-        return;
-      }
-      btn.disabled = true;
-      await api(`/api/apps/${id}`, {
-        method: "DELETE",
-        body: JSON.stringify({
-          mode: "delete",
-          confirmId: id,
-          confirmPhrase: "DELETE",
-        }),
-      });
-      await refresh();
-      alert(`已刪除：${name}`);
+      await openDeleteModal(id);
     }
   } catch (err) {
     alert(err.message || String(err));
@@ -1007,14 +1072,41 @@ el("btnReorderReset")?.addEventListener("click", async () => {
   }
 });
 
-// Top dropdown: select card → jump
+// Top dropdown: selecting an app only selects it.
+//
+// It used to jump straight to the card, which scrolled the page away the
+// moment the owner picked an option and left the picker buttons
+// ("跳到此卡", "開啟選中 App", "📱 Tailscale") unreachable. Selecting now
+// only arms the buttons; the jump is the button's job.
 const cardSelectEl = el("cardSelect");
 if (cardSelectEl) {
   cardSelectEl.addEventListener("change", () => {
     const id = cardSelectEl.value;
     state.selectedCardId = id;
-    if (id) jumpToCard(id);
+    // Highlight the chosen card without moving the page.
+    document.querySelectorAll(".card.is-selected").forEach((c) => c.classList.remove("is-selected"));
+    if (id) {
+      document.querySelector(`.card[data-id="${CSS.escape(id)}"]`)?.classList.add("is-selected");
+    }
+    updatePickerButtons();
   });
+}
+
+/** Enable the picker buttons only when an app is selected. */
+function updatePickerButtons() {
+  const id = el("cardSelect")?.value || state.selectedCardId;
+  const app = state.apps.find((a) => a.id === id);
+  const jump = el("btnJumpCard");
+  const open = el("btnOpenSelected");
+  const ts = el("btnOpenTs");
+  if (jump) jump.disabled = !id;
+  if (open) open.disabled = !id || !app?.status?.openUrl;
+  if (ts) ts.disabled = !id || !app?.status?.phoneUrl;
+  if (ts) {
+    ts.title = app?.status?.phoneUrl
+      ? `用 Tailscale 網址開啟：${app.status.phoneUrl}`
+      : "呢張卡未有 Tailscale 連結";
+  }
 }
 el("btnJumpCard")?.addEventListener("click", () => {
   const id = el("cardSelect")?.value || state.selectedCardId;
@@ -1034,6 +1126,25 @@ el("btnOpenSelected")?.addEventListener("click", () => {
   const url = app?.status?.openUrl;
   if (!url) {
     alert("呢張卡未有活躍連結（可能未設 port 或未啟動）");
+    jumpToCard(id);
+    return;
+  }
+  window.open(url, "_blank", "noopener");
+});
+
+// Open the selected app straight on its Tailscale URL, without going
+// through the card. The link is the Magic DNS hostname, so the phone and
+// the machine reach the same address.
+el("btnOpenTs")?.addEventListener("click", () => {
+  const id = el("cardSelect")?.value || state.selectedCardId;
+  if (!id) {
+    alert("請先喺下拉清單揀一張卡");
+    return;
+  }
+  const app = state.apps.find((a) => a.id === id);
+  const url = app?.status?.phoneUrl;
+  if (!url) {
+    alert("呢張卡未有 Tailscale 連結（可能未設 port）");
     jumpToCard(id);
     return;
   }
@@ -1286,7 +1397,7 @@ el("btnCopyExport")?.addEventListener("click", async () => {
 });
 
 el("btnSummary").addEventListener("click", async () => {
-  const res = await fetch("/api/summary");
+  const res = await fetch(`${apiBase()}/api/summary`);
   const text = await res.text();
   el("summaryBody").textContent = text;
   el("summaryModal").classList.remove("hidden");
@@ -1306,3 +1417,151 @@ loadTemplates()
     el("list").innerHTML = `<div class="card error">載入失敗：${escapeHtml(e.message)}</div>`;
   });
 setInterval(() => refresh().catch(() => {}), 8000);
+
+/* ══ Delete app: two-step confirmation ══════════════════════════════ */
+
+let delState = null;
+
+function humanBytes(n) {
+  if (!n) return "0 B";
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  let i = 0;
+  let v = n;
+  while (v >= 1024 && i < units.length - 1) {
+    v /= 1024;
+    i += 1;
+  }
+  return `${v < 10 && i > 0 ? v.toFixed(1) : Math.round(v)} ${units[i]}`;
+}
+
+/**
+ * Open the destructive-delete dialog.
+ *
+ * The card shows what would be removed — size, file count, the largest
+ * files — before anything happens, so the owner confirms with facts rather
+ * than a guess. The button only arms once the app id is typed correctly,
+ * and the second step needs the word DELETE.
+ */
+async function openDeleteModal(id) {
+  const app = state.apps.find((a) => a.id === id);
+  if (!app) return;
+
+  const modal = el("deleteModal");
+  const name = app.nameZh || app.name || id;
+
+  el("delName").textContent = name;
+  el("delSub").textContent =
+    "會停止服務、從 Hub 移除卡片，然後永久刪除整個資料夾（code + data）。呢個操作唔可以復原。";
+  el("delPath").textContent = app.path || "—";
+  el("delConfirmHint").textContent = id;
+  el("delConfirmInput").value = "";
+  el("delPhraseInput").value = "";
+  el("delPhraseStep").hidden = true;
+  el("delError").textContent = "";
+  el("btnDelConfirm").disabled = true;
+  el("delPreview").innerHTML = '<div class="del-stats"><div class="muted">統計中…</div></div>';
+  el("delPath").textContent = app.path || "—";
+
+  modal.classList.remove("hidden");
+  el("delConfirmInput").focus();
+
+  let preview;
+  try {
+    preview = await api(`/api/apps/${id}/delete-preview`);
+  } catch (e) {
+    el("delPreview").innerHTML = `<div class="del-warn">預覽失敗：${escapeHtml(String(e.message || e))}</div>`;
+    return;
+  }
+
+  delState = { id, name, preview };
+
+  if (!preview.canDelete) {
+    el("delPath").textContent = preview.path || "—";
+    el("delPreview").innerHTML = `<div class="del-warn">唔可以刪除：${escapeHtml(preview.reason || "未知原因")}</div>`;
+    el("btnDelConfirm").disabled = true;
+    return;
+  }
+
+  const stats = [
+    ["檔案", preview.fileCount],
+    ["資料夾", preview.dirCount],
+    ["總大小", humanBytes(preview.totalBytes)],
+  ];
+  if (preview.dbType && preview.dbType !== "none") stats.push(["資料庫", preview.dbType]);
+  if (preview.service) stats.push(["服務", preview.service.active === "active" ? "運行中" : preview.service.active]);
+
+  el("delPreview").innerHTML = `
+    <div class="del-stats">
+      ${stats
+        .map(
+          ([label, value]) =>
+            `<div class="del-stat"><b>${escapeHtml(String(value))}</b><span>${escapeHtml(label)}</span></div>`
+        )
+        .join("")}
+    </div>
+    ${
+      preview.largest && preview.largest.length
+        ? `<ul class="del-largest">${preview.largest
+            .map(
+              (f) =>
+                `<li><span>${escapeHtml(f.name)}</span><span>${escapeHtml(humanBytes(f.bytes))}</span></li>`
+            )
+            .join("")}</ul>`
+        : ""
+    }
+    <div class="del-warn">
+      呢個資料夾會被永久刪除，唔會留喺垃圾桶。<br/>
+      服務：${escapeHtml(preview.service?.unit || "無 systemd unit")}
+    </div>`;
+
+  updateDeleteConfirmState();
+}
+
+function updateDeleteConfirmState() {
+  if (!delState) return;
+  const typedId = el("delConfirmInput").value.trim();
+  const idOk = typedId === delState.id;
+  // The second step only appears once the id matches.
+  el("delPhraseStep").hidden = !idOk;
+  const phrase = el("delPhraseInput").value.trim();
+  el("btnDelConfirm").disabled = !(idOk && phrase === "DELETE");
+}
+
+async function runDelete() {
+  if (!delState) return;
+  const btn = el("btnDelConfirm");
+  btn.disabled = true;
+  el("delError").textContent = "";
+  try {
+    await api(`/api/apps/${delState.id}`, {
+      method: "DELETE",
+      body: JSON.stringify({
+        mode: "delete",
+        confirmId: delState.id,
+        confirmPhrase: "DELETE",
+      }),
+    });
+    el("deleteModal").classList.add("hidden");
+    delState = null;
+    await refresh();
+    toast("已永久刪除");
+  } catch (e) {
+    el("delError").textContent = String(e.message || e);
+    btn.disabled = false;
+  }
+}
+
+/* Delete modal wiring */
+el("btnDelCancel")?.addEventListener("click", () => {
+  el("deleteModal").classList.add("hidden");
+  delState = null;
+});
+el("delConfirmInput")?.addEventListener("input", updateDeleteConfirmState);
+el("delPhraseInput")?.addEventListener("input", updateDeleteConfirmState);
+el("btnDelConfirm")?.addEventListener("click", runDelete);
+el("deleteModal")?.addEventListener("click", (e) => {
+  if (e.target === el("deleteModal")) {
+    el("deleteModal").classList.add("hidden");
+    delState = null;
+  }
+});

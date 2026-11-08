@@ -213,7 +213,19 @@ async function isPortOpenAny(port, tsIp) {
   return false;
 }
 
-export async function enrichApp(app, tsIp) {
+/**
+ * The hub's public origin, so a phone link can go through /go/<id>.
+ *
+ * The launcher has to be same-origin with the hub for the credential to
+ * survive the navigation, so it uses the hub's own tailnet hostname.
+ * The hub is published on the standard HTTPS port under /hub/.
+ */
+function hubPublicOrigin(tsHostname) {
+  const host = tsHostname || "homea-gtr-pro.tail8f3151.ts.net";
+  return `https://${host}/hub`;
+}
+
+export async function enrichApp(app, tsIp, tsHostname) {
   const uiUp = await isPortOpenAny(app.ports?.ui, tsIp);
   const apiUp = await isPortOpenAny(app.ports?.api, tsIp);
   const running = Boolean(
@@ -225,10 +237,56 @@ export async function enrichApp(app, tsIp) {
   const openUrl = app.ports?.ui
     ? `http://${openHost}:${app.ports.ui}${app.openPath || ""}`
     : null;
-  const phoneUrl =
-    app.ports?.ui && tsIp
-      ? `http://${tsIp}:${app.ports.ui}${app.openPath || ""}`
+  // The phone link is a Tailscale hostname, never a raw tailnet IP: Magic
+  // DNS resolves the hostname to the tailnet address, so the link stays
+  // readable and survives the tailnet IP changing.
+  //
+  // An app that only listens on loopback (dsh web, deliberately) needs a
+  // Tailscale serve mount, which the registry entry provides through
+  // `tailscaleUrl`. Everything else binds 0.0.0.0 and is reached directly.
+  const tsHost = tsHostname || tsIp;
+  // The phone link goes through the hub's /go/<id> launcher, which injects
+  // the app's token or Basic-auth credentials so the phone never has to
+  // type one. The launcher falls back to this plain link for apps that
+  // need no credential.
+  //
+  // An app that binds LOOPBACK only is unreachable at the tailnet address:
+  // the direct `http://<host>:<ui-port>` link would time out on the phone.
+  // Such an app needs a Tailscale serve mount, and the registry entry names
+  // it in `tailscaleUrl`.
+  //
+  // The reachability question is specifically "does it answer on the
+  // TAILNET address", NOT "is the port open on loopback": `isPortOpenAny`
+  // returns true when the loopback probe succeeds, which says nothing
+  // about whether a phone can reach it. Ask the tailnet address directly,
+  // and fall back to the loopback answer only when there is no tailnet
+  // address to test against.
+  let directReachable = false;
+  if (app.ports?.ui) {
+    if (tsIp) {
+      directReachable = await isPortOpen(app.ports.ui, tsIp);
+    } else {
+      directReachable = await isPortOpen(app.ports.ui);
+    }
+  }
+  const plainPhone =
+    app.ports?.ui && tsHost && directReachable
+      ? `http://${tsHost}:${app.ports.ui}${app.openPath || ""}`
       : null;
+  // With no reachable direct link, the serve mount (if any) is the phone
+  // entry point. It is published verbatim — it is already an absolute URL
+  // that includes its own port, so it must not be wrapped in the launcher
+  // (the launcher resolves the app's LOCAL port, which differs here).
+  const phoneUrl = plainPhone
+    ? `${hubPublicOrigin(tsHostname)}/go/${encodeURIComponent(app.id)}`
+    : app.tailscaleUrl || null;
+
+  // A tool with no local web surface (a desktop app, a CLI, a hosted SaaS)
+  // still needs somewhere for the phone to go. `externalUrl` is that
+  // destination: it is the app's own web front end, not a local listener, so
+  // it is published verbatim and never wrapped in the /go/<id> launcher
+  // (there is no local credential to inject and no local port to resolve).
+  const externalUrl = app.externalUrl || null;
 
   let pathExists = false;
   try {
@@ -249,7 +307,7 @@ export async function enrichApp(app, tsIp) {
     ...app,
     pathExists,
     git,
-    status: { running, uiUp, apiUp, openUrl, phoneUrl },
+    status: { running, uiUp, apiUp, openUrl, phoneUrl, externalUrl },
   };
 }
 
@@ -389,6 +447,30 @@ export function tailscaleIp() {
   }
 }
 
+/**
+ * The machine's Magic DNS name.
+ *
+ * The phone link uses this rather than the raw tailnet IP: Magic DNS already
+ * resolves it to the tailnet address, so the link stays readable and
+ * survives the tailnet IP changing.
+ */
+export function tailscaleHostname() {
+  try {
+    const name = execSync("tailscale status --json 2>/dev/null", { encoding: "utf8" });
+    const parsed = JSON.parse(name);
+    const dnsName = parsed?.Self?.DNSName;
+    if (dnsName) return dnsName.replace(/\.$/, "");
+    const legacy = parsed?.Self?.HostName;
+    if (legacy) {
+      const suffix = parsed?.MagicDNSSuffix;
+      if (suffix) return `${legacy}.${suffix}`;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 /** Paths that must never be deleted by App Hub */
 export function isProtectedPath(targetPath) {
   const resolved = path.resolve(targetPath);
@@ -462,6 +544,92 @@ export function removeAppFromRegistry(id) {
  * @param {string} id
  * @param {"unregister"|"delete"} mode
  */
+/**
+ * Preview what a full delete would remove.
+ *
+ * The card needs to say how big the folder is and how many files it holds
+ * before the owner confirms, so the decision is informed rather than a
+ * guess. Nothing is modified here.
+ */
+export function previewAppDelete(id) {
+  const reg = readRegistry();
+  const app = reg.apps.find((a) => a.id === id);
+  if (!app) throw new Error(`搵唔到 app：${id}`);
+
+  const check = canDeleteAppFiles(app);
+  const out = {
+    id,
+    name: app.nameZh || app.name || id,
+    path: app.path || null,
+    canDelete: Boolean(check.ok),
+    reason: check.reason || null,
+    resolved: check.resolved || null,
+    fileCount: 0,
+    dirCount: 0,
+    totalBytes: 0,
+    largest: [],
+    symlink: false,
+    service: null,
+    dbType: app.dbType || "none",
+  };
+  if (!check.ok || !check.resolved) return out;
+
+  const target = check.resolved;
+  try {
+    out.symlink = fs.lstatSync(target).isSymbolicLink();
+  } catch {}
+
+  const largest = [];
+  const walk = (dir, depth = 0) => {
+    if (depth > 12) return;
+    let entries = [];
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const e of entries) {
+      const full = path.join(dir, e.name);
+      try {
+        if (e.isDirectory()) {
+          out.dirCount += 1;
+          walk(full, depth + 1);
+        } else if (e.isFile()) {
+          const st = fs.statSync(full);
+          out.fileCount += 1;
+          out.totalBytes += st.size;
+          largest.push({ name: e.name, bytes: st.size });
+        }
+      } catch {}
+    }
+  };
+  // A symlink is deleted as a link; do not walk into its target.
+  if (!out.symlink) walk(target);
+  else {
+    try {
+      const st = fs.statSync(target);
+      out.fileCount = 1;
+      out.totalBytes = st.size;
+    } catch {}
+  }
+
+  largest.sort((a, b) => b.bytes - a.bytes);
+  out.largest = largest.slice(0, 5);
+
+  // The unit that serves it, so the preview can name what gets stopped.
+  const unit = `app-${id}.service`;
+  try {
+    const res = execSync(`systemctl --user is-active ${unit} 2>/dev/null`, {
+      encoding: "utf8",
+    }).trim();
+    out.service = { unit, active: res || "unknown" };
+  } catch {
+    out.service = null;
+  }
+
+  return out;
+}
+
 export function destroyApp(id, mode = "unregister") {
   if (id === "app-hub") {
     throw new Error("唔可以移除／刪除 App Hub 自己");
