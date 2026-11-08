@@ -1,0 +1,2931 @@
+{
+  "version": 1,
+  "updatedAt": "2026-11-08T02:25:26.914439Z",
+  "hub": {
+    "port": 7890,
+    "name": "Keith App Hub",
+    "nameZh": "Keith App 控制台"
+  },
+  "portRanges": {
+    "uiStart": 5173,
+    "apiStart": 3001,
+    "dbStart": 54329
+  },
+  "apps": [
+    {
+      "id": "freeze-dashboard",
+      "name": "Freeze Dashboard",
+      "nameZh": "當機監察面板",
+      "path": "/home/homea/freeze-dashboard",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "本機 hang/freeze 監察：CPU/GPU/溫度、unfreeze；Tailscale 手機開。Port 8787。",
+      "stack": "Python ThreadingHTTPServer",
+      "tags": [
+        "monitor",
+        "system"
+      ],
+      "ports": {
+        "ui": 8787,
+        "api": 8787
+      },
+      "startCmd": "systemctl --user start freeze-dashboard",
+      "stopCmd": "systemctl --user stop freeze-dashboard",
+      "openPath": "/",
+      "createdAt": "2026-07-14",
+      "updatedAt": "2026-07-14",
+      "notes": "systemd user service；登入有 basic auth（見 README）。",
+      "grokHint": "Open folder /home/homea/freeze-dashboard (app.py + static/). Port 8787. systemctl --user status freeze-dashboard"
+    },
+    {
+      "id": "demo-hello",
+      "name": "demo-hello",
+      "nameZh": "Demo 試驗頁",
+      "path": "/home/homea/apps/trials/demo-hello",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "App Hub 示範用靜態頁",
+      "stack": "Static HTML",
+      "tags": [
+        "trial",
+        "static-trial",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5174,
+        "api": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-14",
+      "updatedAt": "2026-07-14",
+      "notes": "由 App Hub 建立。用 Grok Build 開呢個資料夾改 code。",
+      "grokHint": "Open folder /home/homea/apps/trials/demo-hello. Template: static-trial. UI port 5174.",
+      "template": "static-trial"
+    },
+    {
+      "id": "db-demo",
+      "name": "db-demo",
+      "nameZh": "資料庫示範",
+      "path": "/home/homea/apps/trials/db-demo",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "test db template",
+      "stack": "React + Vite + Express + JSON file DB",
+      "dbType": "json-file",
+      "tags": [
+        "trial",
+        "fullstack-db",
+        "app-hub",
+        "database",
+        "demo",
+        "db"
+      ],
+      "ports": {
+        "ui": 5175,
+        "api": 3002
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-15",
+      "updatedAt": "2026-07-15",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。可匯出 AGENT.md。",
+      "grokHint": "Open /home/homea/apps/trials/db-demo. Template fullstack-db (React + Vite + Express + JSON file DB). UI :5175 API :3002. Data under **/data or server/data**.",
+      "template": "fullstack-db"
+    },
+    {
+      "id": "work-order-demo",
+      "name": "work-order-demo",
+      "nameZh": "開工單示範",
+      "path": "/home/homea/apps/trials/work-order-demo",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "示範 Agent handoff",
+      "goal": "示範 Agent handoff",
+      "inScope": "首頁\n按鈕",
+      "outOfScope": "登入",
+      "acceptance": "可 start\n顏色正確",
+      "nextTask": "改首頁標題同主色",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "React + Vite",
+      "dbType": null,
+      "tags": [
+        "trial",
+        "react-trial",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5176,
+        "api": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-15",
+      "updatedAt": "2026-07-15",
+      "lastChange": "Created via App Hub 2026-07-15",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。讀 AGENT.md / AGENT_PROMPT.md。",
+      "referenceUrl": null,
+      "siteStyle": "modern",
+      "colorTheme": "teal",
+      "audience": "personal",
+      "primaryColor": "#14b8a6",
+      "design": {
+        "siteStyle": "modern",
+        "colorTheme": "teal",
+        "audience": "personal",
+        "primaryColor": "#14b8a6",
+        "density": "default",
+        "fontScale": 1
+      },
+      "grokHint": "Open /home/homea/apps/trials/work-order-demo. Template react-trial (React + Vite). UI :5176. Goal: 示範 Agent handoff. Next: 改首頁標題同主色. Style: modern. Color: teal (#14b8a6). Audience: personal. Read AGENT.md and design.json first.",
+      "template": "react-trial",
+      "briefVersion": 1
+    },
+    {
+      "id": "sitemap-demo",
+      "name": "sitemap-demo",
+      "nameZh": "SiteMap 示範",
+      "path": "/home/homea/apps/trials/sitemap-demo",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "有 site map 的 demo",
+      "goal": "有 site map 的 demo",
+      "inScope": "Core happy-path UI\nBasic data flow if template has DB\nMatch siteStyle / color / audience",
+      "outOfScope": "Auth / payments\nPublic cloud deploy\nComplex multi-user roles",
+      "acceptance": "App starts with ./start.sh\nActive URL loads without console errors\nPrimary UI matches chosen style/color/audience at a glance\nSite map primary routes reachable or stubbed\nAGENT.md exists and is up to date",
+      "nextTask": "Scaffold UI to match design constraints; implement first acceptance criterion.",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "React + Vite",
+      "dbType": null,
+      "tags": [
+        "trial",
+        "react-trial",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5178,
+        "api": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-15",
+      "updatedAt": "2026-07-15",
+      "lastChange": "Created via App Hub 2026-07-15",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。讀 AGENT.md / AGENT_PROMPT.md。",
+      "referenceUrl": null,
+      "siteStyle": "modern",
+      "colorTheme": "blue",
+      "audience": "family",
+      "primaryColor": null,
+      "siteMap": "/ 首頁\n/services 服務\n/contact 聯絡",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "首頁"
+        },
+        {
+          "path": "/services",
+          "title": "服務"
+        },
+        {
+          "path": "/contact",
+          "title": "聯絡"
+        }
+      ],
+      "siteMapSummary": "/ · /services · /contact",
+      "design": {
+        "siteStyle": "modern",
+        "colorTheme": "blue",
+        "audience": "family",
+        "primaryColor": null,
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "首頁"
+          },
+          {
+            "path": "/services",
+            "title": "服務"
+          },
+          {
+            "path": "/contact",
+            "title": "聯絡"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/trials/sitemap-demo. Template react-trial (React + Vite). UI :5178. Goal: 有 site map 的 demo. Next: Scaffold UI to match design constraints; implement first acceptance criterion.. Site map: / · /services · /contact. Style: modern. Color: blue. Audience: family. Read AGENT.md, design.json (incl. siteMap), and SITE_MAP.md first.",
+      "template": "react-trial",
+      "briefVersion": 1
+    },
+    {
+      "id": "tech-demo",
+      "name": "tech-demo",
+      "nameZh": "技術分析示範",
+      "path": "/home/homea/apps/trials/tech-demo",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "我們是具規模的一站式家居服務公司，近年發展成專業的室內環境質素顧問，提供全面的方案及配套服務，包括吉屋/裝修後清潔，除甲醛，防輻射，消毒，家務助理，滅蟲，維修，防水，地板打蠟等。",
+      "goal": "做出受「家居易 Homeasy | 吉屋/裝修後清潔，除甲醛，防輻射，消毒，家務助理，滅」啟發嘅本機 Web App MVP",
+      "inScope": "/ 首頁\n/shop 精選產品\n/cart 購物車\n/ct-main CT觸媒 除甲醛 空氣淨化\n/flu-end FLU END 長效抗菌消毒\n/about-us 關於我們",
+      "outOfScope": "Auth / payments\nPublic cloud deploy\nComplex multi-user roles",
+      "acceptance": "App starts with ./start.sh\nActive URL loads without console errors\nPrimary UI matches chosen style/color/audience at a glance\nSite map primary routes reachable or stubbed\nAGENT.md exists and is up to date",
+      "nextTask": "按 design、site map 同 TECH 分析起首頁骨架；DB/語言用本地建議，唔使照抄原站托管平台",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "React + Vite + Express + JSON file DB",
+      "dbType": "json-file",
+      "tags": [
+        "trial",
+        "fullstack-db",
+        "app-hub",
+        "database",
+        "from-url",
+        "inspired",
+        "wordpress",
+        "jquery",
+        "tech-analyzed"
+      ],
+      "ports": {
+        "ui": 5179,
+        "api": 3004
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-15",
+      "updatedAt": "2026-07-15",
+      "lastChange": "Created via App Hub 2026-07-15",
+      "notes": "參考網站：https://www.homeasy.hk/\n原站標題：家居易 Homeasy | 吉屋/裝修後清潔，除甲醛，防輻射，消毒，家務助理，滅蟲，維修，防水，地板打蠟等\n網站名：Homeasy - 家居易為您提供一站式家居服務：家居清潔(鐘點),海外女傭,陪月服務,滅蟲消毒,地板工程,家居維修,搬運服務,禮賓司。以上各項服務均設有獨立網站，詳盡介紹其工作範圍、服務收費、條款細則以及相關的服務。\n分析時間：2026-07-15T03:21:07.056Z\n建議原因：一般網站 → 預設 React 試驗（可手動改）；技術指紋建議範本：fullstack-db；頁面色碼 #038 → blue；Site map 由導航估到 16 個 route\n風格：modern · 主色：blue (#038) · 對象：family\nSite map：/ · /shop · /cart · /ct-main · /flu-end · /about-us · /waterproof · /contact-us · /my-account · /maintenance · /information · /pest-control · /mite-control · /household-care · /house-cleaning · /home-inspector\n=== 參考站技術分析（指紋／推斷）===\nCoding language (detected/guess): PHP, Modern JS (ES modules)\nFrameworks/CMS: WordPress (PHP), jQuery\nDatabase (guess): MySQL / MariaDB (typical for WordPress)\nServer/CDN/Hosting: nginx\nAnalytics: Google Analytics\nGenerator meta: All in One SEO (AIOSEO) 4.9.6.2\nRecommended local template: fullstack-db\nRecommended local language: JavaScript (rebuild) — original likely PHP/WordPress\nRecommended local DB: json-file MVP; production often MySQL (WP) → consider PostgreSQL for new app\nNote: Fingerprints from public HTML/headers only. Server language & DB are often hidden; treat DB as educated guess unless confirmed.\n重建建議：參考站似 WordPress：本機重建唔使照抄 PHP，用 React+API+DB 更易維護。\n注意：呢個係「靈感／參考」scaffold，唔係 clone 成個網站；DB/後端語言多數唔公開，僅供開發參考。",
+      "referenceUrl": "https://www.homeasy.hk/",
+      "siteStyle": "modern",
+      "colorTheme": "blue",
+      "audience": "family",
+      "primaryColor": "#038",
+      "siteMap": "/ 首頁\n/shop 精選產品\n/cart 購物車\n/ct-main CT觸媒 除甲醛 空氣淨化\n/flu-end FLU END 長效抗菌消毒\n/about-us 關於我們\n/waterproof 漏水檢測及防水工程\n/contact-us 聯絡我們\n/my-account 會員登入\n/maintenance 維修保養\n/information 家居教室\n/pest-control 滅蟲及防蟲\n/mite-control 除塵蟎及蒸氣\n/household-care 家居照顧\n/house-cleaning 吉屋/裝修後清潔\n/home-inspector 安居檢測",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "首頁"
+        },
+        {
+          "path": "/shop",
+          "title": "精選產品"
+        },
+        {
+          "path": "/cart",
+          "title": "購物車"
+        },
+        {
+          "path": "/ct-main",
+          "title": "CT觸媒 除甲醛 空氣淨化"
+        },
+        {
+          "path": "/flu-end",
+          "title": "FLU END 長效抗菌消毒"
+        },
+        {
+          "path": "/about-us",
+          "title": "關於我們"
+        },
+        {
+          "path": "/waterproof",
+          "title": "漏水檢測及防水工程"
+        },
+        {
+          "path": "/contact-us",
+          "title": "聯絡我們"
+        },
+        {
+          "path": "/my-account",
+          "title": "會員登入"
+        },
+        {
+          "path": "/maintenance",
+          "title": "維修保養"
+        },
+        {
+          "path": "/information",
+          "title": "家居教室"
+        },
+        {
+          "path": "/pest-control",
+          "title": "滅蟲及防蟲"
+        },
+        {
+          "path": "/mite-control",
+          "title": "除塵蟎及蒸氣"
+        },
+        {
+          "path": "/household-care",
+          "title": "家居照顧"
+        },
+        {
+          "path": "/house-cleaning",
+          "title": "吉屋/裝修後清潔"
+        },
+        {
+          "path": "/home-inspector",
+          "title": "安居檢測"
+        }
+      ],
+      "siteMapSummary": "/ · /shop · /cart · /ct-main · +12",
+      "refTech": {
+        "generator": "All in One SEO (AIOSEO) 4.9.6.2",
+        "cms": [
+          {
+            "id": "wordpress",
+            "label": "WordPress (PHP)",
+            "category": "cms",
+            "score": 4,
+            "confidence": 0.95,
+            "evidence": [
+              "wp-content",
+              "wp-includes",
+              "wp-json",
+              "wp-emoji"
+            ]
+          }
+        ],
+        "frontend": [
+          {
+            "id": "jquery",
+            "label": "jQuery",
+            "category": "frontend",
+            "score": 3,
+            "confidence": 0.7999999999999999,
+            "evidence": [
+              "jquery",
+              "jquery.min.js",
+              "jquery-"
+            ]
+          }
+        ],
+        "css": [],
+        "languages": {
+          "ids": [
+            "php",
+            "javascript"
+          ],
+          "labels": [
+            "PHP",
+            "Modern JS (ES modules)"
+          ]
+        },
+        "databases": [
+          {
+            "id": "mysql",
+            "label": "MySQL / MariaDB (typical for WordPress)",
+            "confidence": 0.55,
+            "note": "Not confirmed from HTML — WordPress usually uses MySQL/MariaDB."
+          }
+        ],
+        "server": [
+          {
+            "id": "nginx",
+            "label": "nginx",
+            "category": "server",
+            "score": 2,
+            "confidence": 0.6499999999999999,
+            "evidence": [
+              "server: nginx",
+              "nginx"
+            ]
+          }
+        ],
+        "cdn": [],
+        "hosting": [],
+        "analytics": [
+          {
+            "id": "ga",
+            "label": "Google Analytics",
+            "category": "analytics",
+            "score": 2,
+            "confidence": 0.6499999999999999,
+            "evidence": [
+              "gtag/js",
+              "googletagmanager"
+            ]
+          }
+        ],
+        "allHits": [
+          {
+            "id": "wordpress",
+            "label": "WordPress (PHP)",
+            "category": "cms",
+            "confidence": 0.95,
+            "evidence": [
+              "wp-content",
+              "wp-includes",
+              "wp-json",
+              "wp-emoji"
+            ]
+          },
+          {
+            "id": "jquery",
+            "label": "jQuery",
+            "category": "frontend",
+            "confidence": 0.8,
+            "evidence": [
+              "jquery",
+              "jquery.min.js",
+              "jquery-"
+            ]
+          },
+          {
+            "id": "php",
+            "label": "PHP",
+            "category": "language",
+            "confidence": 0.65,
+            "evidence": [
+              ".php",
+              "wp-content"
+            ]
+          },
+          {
+            "id": "nginx",
+            "label": "nginx",
+            "category": "server",
+            "confidence": 0.65,
+            "evidence": [
+              "server: nginx",
+              "nginx"
+            ]
+          },
+          {
+            "id": "ga",
+            "label": "Google Analytics",
+            "category": "analytics",
+            "confidence": 0.65,
+            "evidence": [
+              "gtag/js",
+              "googletagmanager"
+            ]
+          }
+        ],
+        "confidenceNote": "Fingerprints from public HTML/headers only. Server language & DB are often hidden; treat DB as educated guess unless confirmed.",
+        "localRecommendation": {
+          "template": "fullstack-db",
+          "language": "JavaScript (rebuild) — original likely PHP/WordPress",
+          "database": "json-file MVP; production often MySQL (WP) → consider PostgreSQL for new app",
+          "notes": [
+            "參考站似 WordPress：本機重建唔使照抄 PHP，用 React+API+DB 更易維護。"
+          ]
+        },
+        "summary": {
+          "codingLanguage": "PHP, Modern JS (ES modules)",
+          "frameworks": [
+            "WordPress (PHP)",
+            "jQuery"
+          ],
+          "database": "MySQL / MariaDB (typical for WordPress)",
+          "serverHosting": "nginx",
+          "analytics": "Google Analytics",
+          "generator": "All in One SEO (AIOSEO) 4.9.6.2",
+          "recommendedLocalTemplate": "fullstack-db",
+          "recommendedLocalLanguage": "JavaScript (rebuild) — original likely PHP/WordPress",
+          "recommendedLocalDatabase": "json-file MVP; production often MySQL (WP) → consider PostgreSQL for new app"
+        },
+        "summaryText": "Coding language (detected/guess): PHP, Modern JS (ES modules)\nFrameworks/CMS: WordPress (PHP), jQuery\nDatabase (guess): MySQL / MariaDB (typical for WordPress)\nServer/CDN/Hosting: nginx\nAnalytics: Google Analytics\nGenerator meta: All in One SEO (AIOSEO) 4.9.6.2\nRecommended local template: fullstack-db\nRecommended local language: JavaScript (rebuild) — original likely PHP/WordPress\nRecommended local DB: json-file MVP; production often MySQL (WP) → consider PostgreSQL for new app\nNote: Fingerprints from public HTML/headers only. Server language & DB are often hidden; treat DB as educated guess unless confirmed."
+      },
+      "techSummary": "Coding language (detected/guess): PHP, Modern JS (ES modules)\nFrameworks/CMS: WordPress (PHP), jQuery\nDatabase (guess): MySQL / MariaDB (typical for WordPress)\nServer/CDN/Hosting: nginx\nAnalytics: Google Analytics\nGenerator meta: All in One SEO (AIOSEO) 4.9.6.2\nRecommended local template: fullstack-db\nRecommended local language: JavaScript (rebuild) — original likely PHP/WordPress\nRecommended local DB: json-file MVP; production often MySQL (WP) → consider PostgreSQL for new app\nNote: Fingerprints from public HTML/headers only. Server language & DB are often hidden; treat DB as educated guess unless confirmed.",
+      "codingLanguage": "PHP, Modern JS (ES modules)",
+      "refDatabase": "MySQL / MariaDB (typical for WordPress)",
+      "refFrameworks": "WordPress (PHP), jQuery",
+      "design": {
+        "siteStyle": "modern",
+        "colorTheme": "blue",
+        "audience": "family",
+        "primaryColor": "#038",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "首頁"
+          },
+          {
+            "path": "/shop",
+            "title": "精選產品"
+          },
+          {
+            "path": "/cart",
+            "title": "購物車"
+          },
+          {
+            "path": "/ct-main",
+            "title": "CT觸媒 除甲醛 空氣淨化"
+          },
+          {
+            "path": "/flu-end",
+            "title": "FLU END 長效抗菌消毒"
+          },
+          {
+            "path": "/about-us",
+            "title": "關於我們"
+          },
+          {
+            "path": "/waterproof",
+            "title": "漏水檢測及防水工程"
+          },
+          {
+            "path": "/contact-us",
+            "title": "聯絡我們"
+          },
+          {
+            "path": "/my-account",
+            "title": "會員登入"
+          },
+          {
+            "path": "/maintenance",
+            "title": "維修保養"
+          },
+          {
+            "path": "/information",
+            "title": "家居教室"
+          },
+          {
+            "path": "/pest-control",
+            "title": "滅蟲及防蟲"
+          },
+          {
+            "path": "/mite-control",
+            "title": "除塵蟎及蒸氣"
+          },
+          {
+            "path": "/household-care",
+            "title": "家居照顧"
+          },
+          {
+            "path": "/house-cleaning",
+            "title": "吉屋/裝修後清潔"
+          },
+          {
+            "path": "/home-inspector",
+            "title": "安居檢測"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/trials/tech-demo. Template fullstack-db (React + Vite + Express + JSON file DB). UI :5179 API :3004. Data under data/ or server/data/. Goal: 做出受「家居易 Homeasy | 吉屋/裝修後清潔，除甲醛，防輻射，消毒，家務助理，滅」啟發嘅本機 Web App MVP. Next: 按 design、site map 同 TECH 分析起首頁骨架；DB/語言用本地建議，唔使照抄原站托管平台. Site map: / · /shop · /cart · /ct-main · +12. Style: modern. Color: blue (#038). Audience: family. Inspired by https://www.homeasy.hk/. Read AGENT.md, design.json (incl. siteMap), and SITE_MAP.md first.",
+      "template": "fullstack-db",
+      "briefVersion": 1
+    },
+    {
+      "id": "homeasy-2",
+      "name": "homeasy  2",
+      "nameZh": "家居易 Homeasy | 吉屋/裝修後清潔，除甲醛，防輻射，消毒，家務助理，滅",
+      "path": "/home/homea/apps/trials/homeasy-2",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "我們是具規模的一站式家居服務公司，近年發展成專業的室內環境質素顧問，提供全面的方案及配套服務，包括吉屋/裝修後清潔，除甲醛，防輻射，消毒，家務助理，滅蟲，維修，防水，地板打蠟等。",
+      "goal": "做出受「家居易 Homeasy | 吉屋/裝修後清潔，除甲醛，防輻射，消毒，家務助理，滅」啟發嘅本機 Web App MVP",
+      "inScope": "首頁／主要 landing\n關鍵服務或內容列表\n一個主要 CTA（例如預約／聯絡）",
+      "outOfScope": "真實付款\n完整會員系統\n公開雲端部署",
+      "acceptance": "./start.sh 可啟動\n本機活躍連結打得開\n風格／主色／對象符合設定\nSite map 主要 route 有對應畫面或 stub\nAGENT.md 已生成",
+      "nextTask": "按 design、site map 同 TECH 分析起首頁骨架；DB/語言用本地建議，唔使照抄原站托管平台",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "React + Vite + Express + JSON file DB",
+      "dbType": "json-file",
+      "tags": [
+        "trial",
+        "fullstack-db",
+        "app-hub",
+        "database",
+        "from-url",
+        "inspired",
+        "wordpress",
+        "jquery",
+        "tech-analyzed"
+      ],
+      "ports": {
+        "ui": 5180,
+        "api": 3005
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-15",
+      "updatedAt": "2026-07-15",
+      "lastChange": "Created via App Hub 2026-07-15",
+      "notes": "參考網站：https://homeasy.hk/\n原站標題：家居易 Homeasy | 吉屋/裝修後清潔，除甲醛，防輻射，消毒，家務助理，滅蟲，維修，防水，地板打蠟等\n網站名：Homeasy - 家居易為您提供一站式家居服務：家居清潔(鐘點),海外女傭,陪月服務,滅蟲消毒,地板工程,家居維修,搬運服務,禮賓司。以上各項服務均設有獨立網站，詳盡介紹其工作範圍、服務收費、條款細則以及相關的服務。\n分析時間：2026-07-15T03:25:19.614Z\n建議原因：一般網站 → 預設 React 試驗（可手動改）；技術指紋建議範本：fullstack-db；頁面色碼 #038 → blue；Site map 由導航估到 16 個 route\n風格：modern · 主色：blue (#038) · 對象：family\nSite map：/ · /shop · /cart · /ct-main · /flu-end · /about-us · /waterproof · /contact-us · /my-account · /maintenance · /information · /pest-control · /mite-control · /household-care · /house-cleaning · /home-inspector\n=== 參考站技術分析（指紋／推斷）===\nCoding language (detected/guess): PHP, Modern JS (ES modules)\nFrameworks/CMS: WordPress (PHP), jQuery\nDatabase (guess): MySQL / MariaDB (typical for WordPress)\nServer/CDN/Hosting: nginx\nAnalytics: Google Analytics\nGenerator meta: All in One SEO (AIOSEO) 4.9.6.2\nRecommended local template: fullstack-db\nRecommended local language: JavaScript (rebuild) — original likely PHP/WordPress\nRecommended local DB: json-file MVP; production often MySQL (WP) → consider PostgreSQL for new app\nNote: Fingerprints from public HTML/headers only. Server language & DB are often hidden; treat DB as educated guess unless confirmed.\n重建建議：參考站似 WordPress：本機重建唔使照抄 PHP，用 React+API+DB 更易維護。\n注意：呢個係「靈感／參考」scaffold，唔係 clone 成個網站；DB/後端語言多數唔公開，僅供開發參考。",
+      "referenceUrl": "https://homeasy.hk/",
+      "siteStyle": "modern",
+      "colorTheme": "blue",
+      "audience": "family",
+      "primaryColor": "#038",
+      "siteMap": "/ 首頁\n/shop 精選產品\n/cart 購物車\n/ct-main CT觸媒 除甲醛 空氣淨化\n/flu-end FLU END 長效抗菌消毒\n/about-us 關於我們\n/waterproof 漏水檢測及防水工程\n/contact-us 聯絡我們\n/my-account 會員登入\n/maintenance 維修保養\n/information 家居教室\n/pest-control 滅蟲及防蟲\n/mite-control 除塵蟎及蒸氣\n/household-care 家居照顧\n/house-cleaning 吉屋/裝修後清潔\n/home-inspector 安居檢測",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "首頁"
+        },
+        {
+          "path": "/shop",
+          "title": "精選產品"
+        },
+        {
+          "path": "/cart",
+          "title": "購物車"
+        },
+        {
+          "path": "/ct-main",
+          "title": "CT觸媒 除甲醛 空氣淨化"
+        },
+        {
+          "path": "/flu-end",
+          "title": "FLU END 長效抗菌消毒"
+        },
+        {
+          "path": "/about-us",
+          "title": "關於我們"
+        },
+        {
+          "path": "/waterproof",
+          "title": "漏水檢測及防水工程"
+        },
+        {
+          "path": "/contact-us",
+          "title": "聯絡我們"
+        },
+        {
+          "path": "/my-account",
+          "title": "會員登入"
+        },
+        {
+          "path": "/maintenance",
+          "title": "維修保養"
+        },
+        {
+          "path": "/information",
+          "title": "家居教室"
+        },
+        {
+          "path": "/pest-control",
+          "title": "滅蟲及防蟲"
+        },
+        {
+          "path": "/mite-control",
+          "title": "除塵蟎及蒸氣"
+        },
+        {
+          "path": "/household-care",
+          "title": "家居照顧"
+        },
+        {
+          "path": "/house-cleaning",
+          "title": "吉屋/裝修後清潔"
+        },
+        {
+          "path": "/home-inspector",
+          "title": "安居檢測"
+        }
+      ],
+      "siteMapSummary": "/ · /shop · /cart · /ct-main · +12",
+      "refTech": {
+        "generator": "All in One SEO (AIOSEO) 4.9.6.2",
+        "cms": [
+          {
+            "id": "wordpress",
+            "label": "WordPress (PHP)",
+            "category": "cms",
+            "score": 4,
+            "confidence": 0.95,
+            "evidence": [
+              "wp-content",
+              "wp-includes",
+              "wp-json",
+              "wp-emoji"
+            ]
+          }
+        ],
+        "frontend": [
+          {
+            "id": "jquery",
+            "label": "jQuery",
+            "category": "frontend",
+            "score": 3,
+            "confidence": 0.7999999999999999,
+            "evidence": [
+              "jquery",
+              "jquery.min.js",
+              "jquery-"
+            ]
+          }
+        ],
+        "css": [],
+        "languages": {
+          "ids": [
+            "php",
+            "javascript"
+          ],
+          "labels": [
+            "PHP",
+            "Modern JS (ES modules)"
+          ]
+        },
+        "databases": [
+          {
+            "id": "mysql",
+            "label": "MySQL / MariaDB (typical for WordPress)",
+            "confidence": 0.55,
+            "note": "Not confirmed from HTML — WordPress usually uses MySQL/MariaDB."
+          }
+        ],
+        "server": [
+          {
+            "id": "nginx",
+            "label": "nginx",
+            "category": "server",
+            "score": 2,
+            "confidence": 0.6499999999999999,
+            "evidence": [
+              "server: nginx",
+              "nginx"
+            ]
+          }
+        ],
+        "cdn": [],
+        "hosting": [],
+        "analytics": [
+          {
+            "id": "ga",
+            "label": "Google Analytics",
+            "category": "analytics",
+            "score": 2,
+            "confidence": 0.6499999999999999,
+            "evidence": [
+              "gtag/js",
+              "googletagmanager"
+            ]
+          }
+        ],
+        "allHits": [
+          {
+            "id": "wordpress",
+            "label": "WordPress (PHP)",
+            "category": "cms",
+            "confidence": 0.95,
+            "evidence": [
+              "wp-content",
+              "wp-includes",
+              "wp-json",
+              "wp-emoji"
+            ]
+          },
+          {
+            "id": "jquery",
+            "label": "jQuery",
+            "category": "frontend",
+            "confidence": 0.8,
+            "evidence": [
+              "jquery",
+              "jquery.min.js",
+              "jquery-"
+            ]
+          },
+          {
+            "id": "php",
+            "label": "PHP",
+            "category": "language",
+            "confidence": 0.65,
+            "evidence": [
+              ".php",
+              "wp-content"
+            ]
+          },
+          {
+            "id": "nginx",
+            "label": "nginx",
+            "category": "server",
+            "confidence": 0.65,
+            "evidence": [
+              "server: nginx",
+              "nginx"
+            ]
+          },
+          {
+            "id": "ga",
+            "label": "Google Analytics",
+            "category": "analytics",
+            "confidence": 0.65,
+            "evidence": [
+              "gtag/js",
+              "googletagmanager"
+            ]
+          }
+        ],
+        "confidenceNote": "Fingerprints from public HTML/headers only. Server language & DB are often hidden; treat DB as educated guess unless confirmed.",
+        "localRecommendation": {
+          "template": "fullstack-db",
+          "language": "JavaScript (rebuild) — original likely PHP/WordPress",
+          "database": "json-file MVP; production often MySQL (WP) → consider PostgreSQL for new app",
+          "notes": [
+            "參考站似 WordPress：本機重建唔使照抄 PHP，用 React+API+DB 更易維護。"
+          ]
+        },
+        "summary": {
+          "codingLanguage": "PHP, Modern JS (ES modules)",
+          "frameworks": [
+            "WordPress (PHP)",
+            "jQuery"
+          ],
+          "database": "MySQL / MariaDB (typical for WordPress)",
+          "serverHosting": "nginx",
+          "analytics": "Google Analytics",
+          "generator": "All in One SEO (AIOSEO) 4.9.6.2",
+          "recommendedLocalTemplate": "fullstack-db",
+          "recommendedLocalLanguage": "JavaScript (rebuild) — original likely PHP/WordPress",
+          "recommendedLocalDatabase": "json-file MVP; production often MySQL (WP) → consider PostgreSQL for new app"
+        },
+        "summaryText": "Coding language (detected/guess): PHP, Modern JS (ES modules)\nFrameworks/CMS: WordPress (PHP), jQuery\nDatabase (guess): MySQL / MariaDB (typical for WordPress)\nServer/CDN/Hosting: nginx\nAnalytics: Google Analytics\nGenerator meta: All in One SEO (AIOSEO) 4.9.6.2\nRecommended local template: fullstack-db\nRecommended local language: JavaScript (rebuild) — original likely PHP/WordPress\nRecommended local DB: json-file MVP; production often MySQL (WP) → consider PostgreSQL for new app\nNote: Fingerprints from public HTML/headers only. Server language & DB are often hidden; treat DB as educated guess unless confirmed."
+      },
+      "techSummary": "Coding language (detected/guess): PHP, Modern JS (ES modules)\nFrameworks/CMS: WordPress (PHP), jQuery\nDatabase (guess): MySQL / MariaDB (typical for WordPress)\nServer/CDN/Hosting: nginx\nAnalytics: Google Analytics\nGenerator meta: All in One SEO (AIOSEO) 4.9.6.2\nRecommended local template: fullstack-db\nRecommended local language: JavaScript (rebuild) — original likely PHP/WordPress\nRecommended local DB: json-file MVP; production often MySQL (WP) → consider PostgreSQL for new app\nNote: Fingerprints from public HTML/headers only. Server language & DB are often hidden; treat DB as educated guess unless confirmed.",
+      "codingLanguage": "PHP, Modern JS (ES modules)",
+      "refDatabase": "MySQL / MariaDB (typical for WordPress)",
+      "refFrameworks": "WordPress (PHP), jQuery",
+      "design": {
+        "siteStyle": "modern",
+        "colorTheme": "blue",
+        "audience": "family",
+        "primaryColor": "#038",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "首頁"
+          },
+          {
+            "path": "/shop",
+            "title": "精選產品"
+          },
+          {
+            "path": "/cart",
+            "title": "購物車"
+          },
+          {
+            "path": "/ct-main",
+            "title": "CT觸媒 除甲醛 空氣淨化"
+          },
+          {
+            "path": "/flu-end",
+            "title": "FLU END 長效抗菌消毒"
+          },
+          {
+            "path": "/about-us",
+            "title": "關於我們"
+          },
+          {
+            "path": "/waterproof",
+            "title": "漏水檢測及防水工程"
+          },
+          {
+            "path": "/contact-us",
+            "title": "聯絡我們"
+          },
+          {
+            "path": "/my-account",
+            "title": "會員登入"
+          },
+          {
+            "path": "/maintenance",
+            "title": "維修保養"
+          },
+          {
+            "path": "/information",
+            "title": "家居教室"
+          },
+          {
+            "path": "/pest-control",
+            "title": "滅蟲及防蟲"
+          },
+          {
+            "path": "/mite-control",
+            "title": "除塵蟎及蒸氣"
+          },
+          {
+            "path": "/household-care",
+            "title": "家居照顧"
+          },
+          {
+            "path": "/house-cleaning",
+            "title": "吉屋/裝修後清潔"
+          },
+          {
+            "path": "/home-inspector",
+            "title": "安居檢測"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/trials/homeasy-2. Template fullstack-db (React + Vite + Express + JSON file DB). UI :5180 API :3005. Data under data/ or server/data/. Goal: 做出受「家居易 Homeasy | 吉屋/裝修後清潔，除甲醛，防輻射，消毒，家務助理，滅」啟發嘅本機 Web App MVP. Next: 按 design、site map 同 TECH 分析起首頁骨架；DB/語言用本地建議，唔使照抄原站托管平台. Site map: / · /shop · /cart · /ct-main · +12. Style: modern. Color: blue (#038). Audience: family. Inspired by https://homeasy.hk/. Read AGENT.md, design.json (incl. siteMap), and SITE_MAP.md first.",
+      "template": "fullstack-db",
+      "briefVersion": 1
+    },
+    {
+      "id": "cron-report",
+      "name": "cron-report",
+      "nameZh": "Cron 任務報告",
+      "path": "/home/homea/apps/daily/cron-report",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "Hermes / OpenClaw 定時任務狀態、最近執行、下次時間；dashboard 自動 refresh，agent 可寫 data/report.json",
+      "goal": "Hermes / OpenClaw 定時任務狀態、最近執行、下次時間；dashboard 自動 refresh，agent 可寫 data/report.json",
+      "inScope": "Core happy-path UI\nBasic data flow if template has DB\nMatch siteStyle / color / audience",
+      "outOfScope": "Auth / payments\nPublic cloud deploy\nComplex multi-user roles",
+      "acceptance": "UI shows Hermes jobs; auto refresh; POST note works",
+      "nextTask": "Optional: fail alerts, OpenClaw heartbeat notes",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "Node Express + live Hermes cron + JSON notes",
+      "dbType": "json-file",
+      "tags": [
+        "daily",
+        "cron",
+        "hermes",
+        "openclaw",
+        "dashboard",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5182,
+        "api": 5182
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-16",
+      "updatedAt": "2026-07-16",
+      "lastChange": "MVP dashboard live Hermes cron + agent POST 2026-07-16",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。讀 AGENT.md / AGENT_PROMPT.md。",
+      "referenceUrl": null,
+      "siteStyle": null,
+      "colorTheme": null,
+      "audience": null,
+      "primaryColor": null,
+      "siteMap": "/ Dashboard\n/api/report Snapshot\n/api/health Health\nPOST /api/report Agent notes",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "API home"
+        },
+        {
+          "path": "/api/health",
+          "title": "Health"
+        },
+        {
+          "path": "/api/records",
+          "title": "Records"
+        }
+      ],
+      "siteMapSummary": "/ · /api/report · /api/health",
+      "refTech": null,
+      "techSummary": null,
+      "codingLanguage": null,
+      "refDatabase": null,
+      "refFrameworks": null,
+      "design": {
+        "siteStyle": null,
+        "colorTheme": null,
+        "audience": null,
+        "primaryColor": null,
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "API home"
+          },
+          {
+            "path": "/api/health",
+            "title": "Health"
+          },
+          {
+            "path": "/api/records",
+            "title": "Records"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/daily/cron-report. Port 5182. Reads ~/.hermes/cron/jobs.json live. Agents POST /api/report notes.",
+      "template": "api-json",
+      "briefVersion": 1
+    },
+    {
+      "id": "hk-news-english",
+      "name": "hk-news-english",
+      "nameZh": "每日英文香港新聞學習",
+      "path": "/home/homea/apps/trials/hk-news-english",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "每日 2 段香港主要新聞英文教學短摘要；艱難字詞義+例句（粵+英）；Quiz（意思多選+spelling）；Progress 記錯字可再練；本地 start.sh / App Hub 可開。",
+      "goal": "每日 2 段香港主要新聞英文教學短摘要；艱難字詞義+例句（粵+英）；Quiz（意思多選+spelling）；Progress 記錯字可再練；本地 start.sh / App Hub 可開。",
+      "inScope": "今日 2 篇英文短摘要（註明日期/主題；AI 摘要非正式報導）\n艱難字：詞義+例句（粵+英）\nQuiz：意思多選 + spelling 輸入\nProgress：記錯字、可再練\n本地 start.sh + App Hub port\nLOOP.md + CHECKLIST.md",
+      "outOfScope": "真實新聞 API / 爬蟲\n帳號登入 / 雲端同步\n每日自動拉新新聞 pipeline\n音訊朗讀 TTS\n付費／多用戶",
+      "acceptance": "build 或可預覽成功\n今日有 2 篇+字表+可做 quiz\nProgress 可記錯字並再練\nstart.sh 可開 App Hub port\nLOOP.md + CHECKLIST.md 已寫",
+      "nextTask": "實作 Today 2 篇+字表+Quiz+Progress；寫 LOOP.md + CHECKLIST.md；auto-verify 綠後等人 visual",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "React + Vite",
+      "dbType": null,
+      "tags": [
+        "trial",
+        "react-trial",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5184,
+        "api": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-17",
+      "updatedAt": "2026-07-17",
+      "lastChange": "Created via App Hub 2026-07-17",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。讀 AGENT.md / AGENT_PROMPT.md。",
+      "referenceUrl": null,
+      "siteStyle": "clean editorial learning app — card-based, readable typography, calm focus mode",
+      "colorTheme": "navy + soft paper + accent teal",
+      "audience": "粵語母語者、大學／新聞英文入門程度",
+      "primaryColor": "#0f4c5c",
+      "siteMap": "/ Today 今日新聞\n/words 艱難字表\n/quiz Quiz\n/progress Progress 錯字再練",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "Today 今日新聞"
+        },
+        {
+          "path": "/words",
+          "title": "艱難字表"
+        },
+        {
+          "path": "/quiz",
+          "title": "Quiz"
+        },
+        {
+          "path": "/progress",
+          "title": "Progress 錯字再練"
+        }
+      ],
+      "siteMapSummary": "/ · /words · /quiz · /progress",
+      "refTech": null,
+      "techSummary": "React + Vite SPA; local JSON seed content; localStorage progress",
+      "codingLanguage": "JavaScript (React + Vite)",
+      "refDatabase": null,
+      "refFrameworks": null,
+      "design": {
+        "siteStyle": "clean editorial learning app — card-based, readable typography, calm focus mode",
+        "colorTheme": "navy + soft paper + accent teal",
+        "audience": "粵語母語者、大學／新聞英文入門程度",
+        "primaryColor": "#0f4c5c",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "Today 今日新聞"
+          },
+          {
+            "path": "/words",
+            "title": "艱難字表"
+          },
+          {
+            "path": "/quiz",
+            "title": "Quiz"
+          },
+          {
+            "path": "/progress",
+            "title": "Progress 錯字再練"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/trials/hk-news-english. Template react-trial (React + Vite). UI :5184. Goal: 每日 2 段香港主要新聞英文教學短摘要；艱難字詞義+例句（粵+英）；Quiz（意思多選+spelling）；Progress 記錯字可再練；本地 start.sh / App Hub 可開。. Next: 實作 Today 2 篇+字表+Quiz+Progress；寫 LOOP.md + CHECKLIST.md；auto-verify 綠後等人 visual. Site map: / · /words · /quiz · /progress. Style: clean editorial learning app — card-based, readable typography, calm focus mode. Color: navy + soft paper + accent teal (#0f4c5c). Audience: 粵語母語者、大學／新聞英文入門程度. Read AGENT.md, design.json (incl. siteMap), and SITE_MAP.md first.",
+      "template": "react-trial",
+      "briefVersion": 1
+    },
+    {
+      "id": "drone-football-sim",
+      "name": "drone-football-sim",
+      "nameZh": "無人機足球 3D",
+      "path": "/home/homea/apps/trials/drone-football-sim",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "Browser 3D quadrotor drone football: keyboard remote control, ball physics, goals, HUD. Inspired by real drone soccer.",
+      "goal": "Browser 3D quadrotor drone football: keyboard remote control, ball physics, goals, HUD. Inspired by real drone soccer.",
+      "inScope": "Single-player practice cage, simplified real-ish quadrotor (throttle/pitch/roll/yaw), keyboard, ball collision, goals, assist-stable mode, third-person camera, dark neon arena.",
+      "outOfScope": "Multiplayer, real FPV distortion, full motor/battery model, AI opponent, leaderboard backend, gamepad/gyro (v2).",
+      "acceptance": "Drone flies with keyboard; ball collides; score on goal; reset works; HUD + controls help; npm run build OK; Keith visual/feel review.",
+      "nextTask": "Implement Three.js flight sim + arena + ball + scoring + keyboard + HUD; npm run build must pass.",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "React + Vite",
+      "dbType": null,
+      "tags": [
+        "trial",
+        "react-trial",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5185,
+        "api": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-17",
+      "updatedAt": "2026-07-17",
+      "lastChange": "Created via App Hub 2026-07-17",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。讀 AGENT.md / AGENT_PROMPT.md。",
+      "referenceUrl": null,
+      "siteStyle": "dark industrial esports cage arena",
+      "colorTheme": "neon cyan on dark",
+      "audience": "drone soccer fans, casual flight sim players",
+      "primaryColor": "#00e5ff",
+      "siteMap": "/ 無人機足球 3D 練習場",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "無人機足球 3D 練習場"
+        }
+      ],
+      "siteMapSummary": "/",
+      "refTech": null,
+      "techSummary": "React + Vite SPA with Three.js 3D canvas, custom quadrotor flight model, simple physics for ball/drone, keyboard controls, HUD overlay.",
+      "codingLanguage": "TypeScript/JavaScript",
+      "refDatabase": null,
+      "refFrameworks": "React, Vite, Three.js",
+      "design": {
+        "siteStyle": "dark industrial esports cage arena",
+        "colorTheme": "neon cyan on dark",
+        "audience": "drone soccer fans, casual flight sim players",
+        "primaryColor": "#00e5ff",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "無人機足球 3D 練習場"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/trials/drone-football-sim. Template react-trial (React + Vite). UI :5185. Goal: Browser 3D quadrotor drone football: keyboard remote control, ball physics, goals, HUD. Inspired by real drone soccer.. Next: Implement Three.js flight sim + arena + ball + scoring + keyboard + HUD; npm run build must pass.. Site map: /. Style: dark industrial esports cage arena. Color: neon cyan on dark (#00e5ff). Audience: drone soccer fans, casual flight sim players. Read AGENT.md, design.json (incl. siteMap), and SITE_MAP.md first.",
+      "template": "react-trial",
+      "briefVersion": 1
+    },
+    {
+      "id": "spacex-launch-sim",
+      "name": "spacex-launch-sim",
+      "nameZh": "SpaceX 母艦起飛 3D",
+      "path": "/home/homea/apps/trials/spacex-launch-sim",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "Browser 3D SpaceX Super Heavy + Starship launch: dusk lighting, engine ignition/flame/dust, ascent, booster separation, ship to planned orbit; simple controls.",
+      "goal": "Browser 3D SpaceX Super Heavy + Starship launch: dusk lighting, engine ignition/flame/dust, ascent, booster separation, ship to planned orbit; simple controls.",
+      "inScope": "Pad scene, dusk light on rocket body, ignition flame+dust, liftoff, booster sep, ship orbit phase, Launch/Reset/camera/timescale HUD",
+      "outOfScope": "Full orbital mechanics GMAT, reentry/catch, multiplayer, VR, backend, real CAD meshes",
+      "acceptance": "Full launch sequence playable; dusk lighting; flame+dust visible; separation; orbit feedback; build OK; Keith visual review",
+      "nextTask": "Implement Three.js launch sim: pad dusk scene, stack model, ignition FX, flight timeline, separation, orbit insert, HUD controls; npm run build must pass.",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "React + Vite",
+      "dbType": null,
+      "tags": [
+        "trial",
+        "react-trial",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5181,
+        "api": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-17",
+      "updatedAt": "2026-07-17",
+      "lastChange": "Created via App Hub 2026-07-17",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。讀 AGENT.md / AGENT_PROMPT.md。",
+      "referenceUrl": null,
+      "siteStyle": "cinematic dusk launch pad",
+      "colorTheme": "flame orange on deep dusk sky",
+      "audience": "spaceflight fans, casual sim players",
+      "primaryColor": "#ff6b35",
+      "siteMap": "/ 發射模擬主畫面",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "發射模擬主畫面"
+        }
+      ],
+      "siteMapSummary": "/",
+      "refTech": null,
+      "techSummary": "React + Vite + Three.js browser 3D launch simulation",
+      "codingLanguage": "TypeScript/JavaScript",
+      "refDatabase": null,
+      "refFrameworks": "React, Vite, Three.js",
+      "design": {
+        "siteStyle": "cinematic dusk launch pad",
+        "colorTheme": "flame orange on deep dusk sky",
+        "audience": "spaceflight fans, casual sim players",
+        "primaryColor": "#ff6b35",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "發射模擬主畫面"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/trials/spacex-launch-sim. Template react-trial (React + Vite). UI :5181. Goal: Browser 3D SpaceX Super Heavy + Starship launch: dusk lighting, engine ignition/flame/dust, ascent, booster separation, ship to planned orbit; simple controls.. Next: Implement Three.js launch sim: pad dusk scene, stack model, ignition FX, flight timeline, separation, orbit insert, HUD controls; npm run build must pass.. Site map: /. Style: cinematic dusk launch pad. Color: flame orange on deep dusk sky (#ff6b35). Audience: spaceflight fans, casual sim players. Read AGENT.md, design.json (incl. siteMap), and SITE_MAP.md first.",
+      "template": "react-trial",
+      "briefVersion": 1
+    },
+    {
+      "id": "mag-shield-sim",
+      "name": "mag-shield-sim",
+      "nameZh": "磁場屏蔽模擬器（規格空殼，非正身）",
+      "path": "/home/homea/apps/trials/mag-shield-sim",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "【規格空殼，唔好當正身】直流/交流磁場屏蔽系統模擬器 trial。正身係 App Hub id magshield（~/apps/daily/mag-shield-sim，:5174）。呢份保留 DESIGN_PLAN.md 同 CALCULATION_SPEC.md。",
+      "goal": "建立可互動嘅磁場屏蔽模擬器：喺場地地圖上放置 DC/AC 場源、標記鐵路/馬路、選擇屏蔽材料，計算屏蔽前後場強分佈，並支援 L0 快速估算至 L1 工程精度",
+      "inScope": "DC/AC 場源模型、物料庫（mumetal/low carbon steel/Al 等）、2D 場地圖、屏蔽前後對比、鐵路/馬路干擾層、L0 解析 + 可擴 L1 2D FEM、loop engineering 工作流",
+      "outOfScope": "v1 不做完整 3D FEM 即時解算、唔做醫療合規認證、唔做實際硬體控制",
+      "acceptance": "有完整設計計劃書與研究彙整；可啟動 web UI；可放置場源並顯示 |B| 熱圖；物料庫含 mumetal/鋼/鋁數據；LOOP.md 與 CHECKLIST 齊全",
+      "nextTask": "完成設計計劃書 + Loop Engineering 文檔後，實作 L0 MVP（Biot-Savart 場源 + 解析屏蔽因子 + 物料庫）",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "React + Vite",
+      "dbType": null,
+      "tags": [
+        "trial",
+        "react-trial",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5183,
+        "api": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-17",
+      "updatedAt": "2026-10-22",
+      "lastChange": "Issue #24：標成上游規格空殼，正身係 magshield :5174",
+      "notes": "DEPRECATED SHELL（Issue #24，2026-10-22）。唔好喺度改產品功能。正身：App Hub id magshield，~/apps/daily/mag-shield-sim，FastAPI+Three.js，:5174。呢份係 Vite+React 空殼，port :5183，冇 server.py。有價值規格：DESIGN_PLAN.md、CALCULATION_SPEC.md、data/materials.json。研究庫公式表喺 ~/mag-shield-sim/research/（未入 App Hub）。三份都未批准刪除。",
+      "referenceUrl": null,
+      "siteStyle": "engineering-dashboard",
+      "colorTheme": "dark-tech",
+      "audience": "EMI/磁場屏蔽工程師、實驗室選址、設備保護設計",
+      "primaryColor": "#0ea5e9",
+      "siteMap": "/ 模擬畫布\n/sources 場源庫\n/materials 屏蔽物料庫\n/analysis 分析結果\n/docs 設計與公式參考\n/api/health 健康檢查\n/api/simulate 模擬計算",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "模擬畫布"
+        },
+        {
+          "path": "/sources",
+          "title": "場源庫"
+        },
+        {
+          "path": "/materials",
+          "title": "屏蔽物料庫"
+        },
+        {
+          "path": "/analysis",
+          "title": "分析結果"
+        },
+        {
+          "path": "/docs",
+          "title": "設計與公式參考"
+        },
+        {
+          "path": "/api/health",
+          "title": "健康檢查"
+        },
+        {
+          "path": "/api/simulate",
+          "title": "模擬計算"
+        }
+      ],
+      "siteMapSummary": "/ · /sources · /materials · /analysis · +3",
+      "refTech": null,
+      "techSummary": "React 前端場地畫布 + TypeScript L0 Biot-Savart/解析屏蔽；後期 Python Magpylib/GetDP 做 L1",
+      "codingLanguage": "TypeScript + Python",
+      "refDatabase": null,
+      "refFrameworks": "React Vite, FastAPI optional, Magpylib/Biot-Savart",
+      "design": {
+        "siteStyle": "engineering-dashboard",
+        "colorTheme": "dark-tech",
+        "audience": "EMI/磁場屏蔽工程師、實驗室選址、設備保護設計",
+        "primaryColor": "#0ea5e9",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "模擬畫布"
+          },
+          {
+            "path": "/sources",
+            "title": "場源庫"
+          },
+          {
+            "path": "/materials",
+            "title": "屏蔽物料庫"
+          },
+          {
+            "path": "/analysis",
+            "title": "分析結果"
+          },
+          {
+            "path": "/docs",
+            "title": "設計與公式參考"
+          },
+          {
+            "path": "/api/health",
+            "title": "健康檢查"
+          },
+          {
+            "path": "/api/simulate",
+            "title": "模擬計算"
+          }
+        ]
+      },
+      "grokHint": "DO NOT treat this as the live app. Spec shell only: ~/apps/trials/mag-shield-sim, Vite+React, UI :5183, no backend. Read DESIGN_PLAN.md and CALCULATION_SPEC.md. Active app is App Hub id magshield at ~/apps/daily/mag-shield-sim port 5174. Research formulas live in ~/mag-shield-sim/research/. Do not delete any of the three copies.",
+      "template": "react-trial",
+      "briefVersion": 1
+    },
+    {
+      "id": "hk-weather-compare",
+      "name": "hk-weather-compare",
+      "nameZh": "香港天氣多源對照",
+      "path": "/home/homea/apps/daily/hk-weather-compare",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "Compare Hong Kong ~9-day weather forecasts from 10 different national/organization sources in one web UI. Show temps, rain, consensus and disagreements.",
+      "goal": "Compare Hong Kong ~9-day weather forecasts from 10 different national/organization sources in one web UI. Show temps, rain, consensus and disagreements.",
+      "inScope": "Server-side fetch of HKO Open API, Open-Meteo multi-models (CMA/JMA/GFS/ICON/GEM/Meteo-France/ECMWF/UKMO), MET Norway; day table comparison; Cantonese/English labels; refresh; LOOP.md checklist.",
+      "outOfScope": "User accounts, push notifications, radar maps, historical climate DB, mobile native apps.",
+      "acceptance": "App starts via start.sh; / shows 9-day multi-source table; at least 8/10 sources load or clear error; auto refresh button works; responsive layout.",
+      "nextTask": "Build multi-source weather aggregation API + comparison dashboard UI (HKO + 9 national models).",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "Node Express + JSON file DB",
+      "dbType": "json-file",
+      "tags": [
+        "daily",
+        "api-json",
+        "app-hub",
+        "database"
+      ],
+      "ports": {
+        "ui": 5186,
+        "api": 5186
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-20",
+      "updatedAt": "2026-07-20",
+      "lastChange": "Created via App Hub 2026-07-20",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。讀 AGENT.md / AGENT_PROMPT.md。",
+      "referenceUrl": null,
+      "siteStyle": "clean data dashboard, weather utility",
+      "colorTheme": "sky blue / storm slate / warm alert amber",
+      "audience": "Keith — daily HK weather planning",
+      "primaryColor": "#0ea5e9",
+      "siteMap": "/ 多源九天對照\n/api/forecast 聚合預報 JSON\n/api/health 健康檢查",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "多源九天對照"
+        },
+        {
+          "path": "/api/forecast",
+          "title": "聚合預報 JSON"
+        },
+        {
+          "path": "/api/health",
+          "title": "健康檢查"
+        }
+      ],
+      "siteMapSummary": "/ · /api/forecast · /api/health",
+      "refTech": null,
+      "techSummary": null,
+      "codingLanguage": null,
+      "refDatabase": null,
+      "refFrameworks": null,
+      "design": {
+        "siteStyle": "clean data dashboard, weather utility",
+        "colorTheme": "sky blue / storm slate / warm alert amber",
+        "audience": "Keith — daily HK weather planning",
+        "primaryColor": "#0ea5e9",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "多源九天對照"
+          },
+          {
+            "path": "/api/forecast",
+            "title": "聚合預報 JSON"
+          },
+          {
+            "path": "/api/health",
+            "title": "健康檢查"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/daily/hk-weather-compare. Template api-json (Node Express + JSON file DB). UI :5186. Data under data/ or server/data/. Goal: Compare Hong Kong ~9-day weather forecasts from 10 different national/organization sources in one web UI. Show temps, rain, consensus and disagreements.. Next: Build multi-source weather aggregation API + comparison dashboard UI (HKO + 9 national models).. Site map: / · /api/forecast · /api/health. Style: clean data dashboard, weather utility. Color: sky blue / storm slate / warm alert amber (#0ea5e9). Audience: Keith — daily HK weather planning. Read AGENT.md, design.json (incl. siteMap), and SITE_MAP.md first.",
+      "template": "api-json",
+      "briefVersion": 1
+    },
+    {
+      "id": "qingming-q3d",
+      "name": "qingming-q3d",
+      "nameZh": "3D Q版清明上河圖",
+      "path": "/home/homea/apps/trials/qingming-q3d",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "3D Q版互動體驗：北宋汴京清明市井，沿手卷郊野→虹橋→城內漫遊",
+      "goal": "用 Three.js 3D Q 版 diorama 呈現張擇端《清明上河圖》三段情景（郊野、汴河虹橋、城內），含歷史熱點解說",
+      "inScope": "React+Vite+Three.js；三主區；Q版人物建築；虹橋放桅動畫；中文 lore UI；build/start",
+      "outOfScope": "500人真實密度；清院本金明池；原畫高清貼圖；VR；後端帳號",
+      "acceptance": "瀏覽器可開；三區可漫遊；虹橋 set-piece 可讀；≥6 熱點；npm run build 成功",
+      "nextTask": "實作 3D 世界殼 + 虹橋高潮 + ≥6 lore hotspots + 捲軸相機",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "React + Vite",
+      "dbType": null,
+      "tags": [
+        "trial",
+        "react-trial",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5187,
+        "api": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-21",
+      "updatedAt": "2026-07-21",
+      "lastChange": "Created via App Hub 2026-07-21",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。讀 AGENT.md / AGENT_PROMPT.md。",
+      "referenceUrl": null,
+      "siteStyle": "3D diorama Q-version, soft Song palette, scroll-journey UX",
+      "colorTheme": "淡赭柳綠河青 + 暖招牌",
+      "audience": "想輕鬆認識北宋汴京與名畫的一般觀眾",
+      "primaryColor": "#c47a4a",
+      "siteMap": "/ 3D 手卷體驗",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "3D 手卷體驗"
+        }
+      ],
+      "siteMapSummary": "/",
+      "refTech": null,
+      "techSummary": "Client-only React+Vite+Three.js WebGL diorama",
+      "codingLanguage": "JavaScript",
+      "refDatabase": null,
+      "refFrameworks": "React, Vite, Three.js",
+      "design": {
+        "siteStyle": "3D diorama Q-version, soft Song palette, scroll-journey UX",
+        "colorTheme": "淡赭柳綠河青 + 暖招牌",
+        "audience": "想輕鬆認識北宋汴京與名畫的一般觀眾",
+        "primaryColor": "#c47a4a",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "3D 手卷體驗"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/trials/qingming-q3d. Template react-trial (React + Vite). UI :5187. Goal: 用 Three.js 3D Q 版 diorama 呈現張擇端《清明上河圖》三段情景（郊野、汴河虹橋、城內），含歷史熱點解說. Next: 實作 3D 世界殼 + 虹橋高潮 + ≥6 lore hotspots + 捲軸相機. Site map: /. Style: 3D diorama Q-version, soft Song palette, scroll-journey UX. Color: 淡赭柳綠河青 + 暖招牌 (#c47a4a). Audience: 想輕鬆認識北宋汴京與名畫的一般觀眾. Read AGENT.md, design.json (incl. siteMap), and SITE_MAP.md first.",
+      "template": "react-trial",
+      "briefVersion": 1
+    },
+    {
+      "id": "xiangqi-gohua",
+      "name": "xiangqi-gohua",
+      "nameZh": "精緻古畫象棋",
+      "path": "/home/homea/apps/trials/xiangqi-gohua",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "2D 精緻古畫風中國象棋：可正常對局、vs AI 可調難度、重開與回退 n 步、將軍聲效、合法着提示。做完後兩輪 debug 才發行。",
+      "goal": "2D 精緻古畫風中國象棋：可正常對局、vs AI 可調難度、重開與回退 n 步、將軍聲效、合法着提示。做完後兩輪 debug 才發行。",
+      "inScope": "2D 棋盤與棋子、完整規則、人機對戰 3 檔難度、重開、回退半步、將軍聲效、合法着高亮與提示一手、古畫風 UI、本機 App Hub 啟動",
+      "outOfScope": "連線對戰、3D、帳號排行、後端、殘局教學關卡",
+      "acceptance": "可玩完整象棋；AI 難度≥3；重開與 undo；將軍有聲；選子高亮合法着；npm run build 過；兩輪 debug 後可發行",
+      "nextTask": "實作完整象棋規則引擎、棋盤 UI、AI、undo/restart、聲效與提示",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "React + Vite",
+      "dbType": null,
+      "tags": [
+        "trial",
+        "react-trial",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5188,
+        "api": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-21",
+      "updatedAt": "2026-07-21",
+      "lastChange": "Created via App Hub 2026-07-21",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。讀 AGENT.md / AGENT_PROMPT.md。",
+      "referenceUrl": null,
+      "siteStyle": "精緻古畫風 2D 中國風，水墨與朱砂金線",
+      "colorTheme": "warm ink-wash classical Chinese painting",
+      "audience": "想本機玩中國象棋的用戶",
+      "primaryColor": "#8B1A1A",
+      "siteMap": "/ 象棋對局主畫面",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "象棋對局主畫面"
+        }
+      ],
+      "siteMapSummary": "/",
+      "refTech": null,
+      "techSummary": "Client-only React SPA; chess engine in pure TS; Web Audio for check SFX",
+      "codingLanguage": "TypeScript + React + Vite",
+      "refDatabase": null,
+      "refFrameworks": null,
+      "design": {
+        "siteStyle": "精緻古畫風 2D 中國風，水墨與朱砂金線",
+        "colorTheme": "warm ink-wash classical Chinese painting",
+        "audience": "想本機玩中國象棋的用戶",
+        "primaryColor": "#8B1A1A",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "象棋對局主畫面"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/trials/xiangqi-gohua. Template react-trial (React + Vite). UI :5188. Goal: 2D 精緻古畫風中國象棋：可正常對局、vs AI 可調難度、重開與回退 n 步、將軍聲效、合法着提示。做完後兩輪 debug 才發行。. Next: 實作完整象棋規則引擎、棋盤 UI、AI、undo/restart、聲效與提示. Site map: /. Style: 精緻古畫風 2D 中國風，水墨與朱砂金線. Color: warm ink-wash classical Chinese painting (#8B1A1A). Audience: 想本機玩中國象棋的用戶. Read AGENT.md, design.json (incl. siteMap), and SITE_MAP.md first.",
+      "template": "react-trial",
+      "briefVersion": 1
+    },
+    {
+      "id": "camry-product-ci",
+      "name": "camry-product-ci",
+      "nameZh": "Camry 產品競爭情報",
+      "path": "/home/homea/apps/daily/camry-product-ci",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "Internal strategic CI site: Camry categories backbone, competitor product scrape (name/specs/images), compare, change monitoring, trade-site radar + alerts. Two full test gates before launch.",
+      "goal": "Internal strategic CI site: Camry categories backbone, competitor product scrape (name/specs/images), compare, change monitoring, trade-site radar + alerts. Two full test gates before launch.",
+      "inScope": "Camry categories; competitors Unique/Canny/Welland/Yolanda; product specs+images; compare; changelog; alerts; trade radar; scheduled crawl; localhost internal",
+      "outOfScope": "Public SaaS; CAPTCHA bypass; email blast v1; sub-second updates",
+      "acceptance": "Health OK; categories seeded; 4 scrapers produce products; compare/changes/alerts work; Gate A+B reports pass; visual review ready",
+      "nextTask": "Scaffold Express+SQLite, scrapers, dashboard UI, crawl jobs, Gate A+B tests",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "Node Express + JSON file DB",
+      "dbType": "json-file",
+      "tags": [
+        "daily",
+        "api-json",
+        "app-hub",
+        "database"
+      ],
+      "ports": {
+        "ui": 5189,
+        "api": 5189
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-21",
+      "updatedAt": "2026-07-21",
+      "lastChange": "Created via App Hub 2026-07-21",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。讀 AGENT.md / AGENT_PROMPT.md。",
+      "referenceUrl": null,
+      "siteStyle": "dashboard-data-dense",
+      "colorTheme": "slate-amber-intel",
+      "audience": "Camry internal strategy / product team",
+      "primaryColor": "#0f766e",
+      "siteMap": "/ Dashboard\n/categories Camry Categories\n/competitors Competitors\n/competitors/:id Competitor Catalog\n/products/:id Product Detail\n/compare Compare by Category\n/changes Changelog\n/radar Trade Radar\n/alerts Alerts\n/admin/crawl Crawl Admin\n/api/* JSON API",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "Dashboard"
+        },
+        {
+          "path": "/categories",
+          "title": "Camry Categories"
+        },
+        {
+          "path": "/competitors",
+          "title": "Competitors"
+        },
+        {
+          "path": "/competitors/:id",
+          "title": "Competitor Catalog"
+        },
+        {
+          "path": "/products/:id",
+          "title": "Product Detail"
+        },
+        {
+          "path": "/compare",
+          "title": "Compare by Category"
+        },
+        {
+          "path": "/changes",
+          "title": "Changelog"
+        },
+        {
+          "path": "/radar",
+          "title": "Trade Radar"
+        },
+        {
+          "path": "/alerts",
+          "title": "Alerts"
+        },
+        {
+          "path": "/admin/crawl",
+          "title": "Crawl Admin"
+        },
+        {
+          "path": "/api/*",
+          "title": "JSON API"
+        }
+      ],
+      "siteMapSummary": "/ · /categories · /competitors · /competitors/:id · +7",
+      "refTech": null,
+      "techSummary": "Node Express + SQLite competitive intelligence platform with scrapers, fingerprinting, and internal dashboard",
+      "codingLanguage": "JavaScript Node",
+      "refDatabase": "SQLite",
+      "refFrameworks": "Express, better-sqlite3, node-cron, cheerio",
+      "design": {
+        "siteStyle": "dashboard-data-dense",
+        "colorTheme": "slate-amber-intel",
+        "audience": "Camry internal strategy / product team",
+        "primaryColor": "#0f766e",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "Dashboard"
+          },
+          {
+            "path": "/categories",
+            "title": "Camry Categories"
+          },
+          {
+            "path": "/competitors",
+            "title": "Competitors"
+          },
+          {
+            "path": "/competitors/:id",
+            "title": "Competitor Catalog"
+          },
+          {
+            "path": "/products/:id",
+            "title": "Product Detail"
+          },
+          {
+            "path": "/compare",
+            "title": "Compare by Category"
+          },
+          {
+            "path": "/changes",
+            "title": "Changelog"
+          },
+          {
+            "path": "/radar",
+            "title": "Trade Radar"
+          },
+          {
+            "path": "/alerts",
+            "title": "Alerts"
+          },
+          {
+            "path": "/admin/crawl",
+            "title": "Crawl Admin"
+          },
+          {
+            "path": "/api/*",
+            "title": "JSON API"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/daily/camry-product-ci. Template api-json (Node Express + JSON file DB). UI :5189. Data under data/ or server/data/. Goal: Internal strategic CI site: Camry categories backbone, competitor product scrape (name/specs/images), compare, change monitoring, trade-site radar + alerts. Two full test gates before launch.. Next: Scaffold Express+SQLite, scrapers, dashboard UI, crawl jobs, Gate A+B tests. Site map: / · /categories · /competitors · /competitors/:id · +7. Style: dashboard-data-dense. Color: slate-amber-intel (#0f766e). Audience: Camry internal strategy / product team. Read AGENT.md, design.json (incl. siteMap), and SITE_MAP.md first.",
+      "template": "api-json",
+      "briefVersion": 1
+    },
+    {
+      "id": "ca3d",
+      "name": "ca3d",
+      "nameZh": "3D 細胞自動機",
+      "path": "/home/homea/apps/trials/ca3d",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "3D cellular automaton web app: voxel grid CA, multi-view cameras, multi-color modes and palettes, play controls.",
+      "goal": "3D cellular automaton web app: voxel grid CA, multi-view cameras, multi-color modes and palettes, play controls.",
+      "inScope": "3D Moore CA, B/S rules, orbit+presets+ortho+slice, color modes/palettes, play/pause/step/reset, grid size speed seed",
+      "outOfScope": "WebXR, multiplayer, server sim, >32^3 heavy GPU",
+      "acceptance": "WebGL scene with evolving colored voxels; multi-view and multi-color; controls work; start.sh opens preview",
+      "nextTask": "Build Three.js voxel CA + UI controls (rules, views, colors)",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "Static HTML + Python http.server",
+      "dbType": null,
+      "tags": [
+        "trial",
+        "static-trial",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5190,
+        "api": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-22",
+      "updatedAt": "2026-07-22",
+      "lastChange": "Created via App Hub 2026-07-22",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。讀 AGENT.md / AGENT_PROMPT.md。",
+      "referenceUrl": null,
+      "siteStyle": "dark-sci-lab",
+      "colorTheme": "neon-cyan-magenta",
+      "audience": "curious users, demo, education",
+      "primaryColor": "#22d3ee",
+      "siteMap": "/ 3D CA Simulator",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "3D CA Simulator"
+        }
+      ],
+      "siteMapSummary": "/",
+      "refTech": null,
+      "techSummary": "Static SPA with Three.js InstancedMesh voxel CA",
+      "codingLanguage": "JavaScript",
+      "refDatabase": null,
+      "refFrameworks": "Three.js",
+      "design": {
+        "siteStyle": "dark-sci-lab",
+        "colorTheme": "neon-cyan-magenta",
+        "audience": "curious users, demo, education",
+        "primaryColor": "#22d3ee",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "3D CA Simulator"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/trials/ca3d. Template static-trial (Static HTML + Python http.server). UI :5190. Goal: 3D cellular automaton web app: voxel grid CA, multi-view cameras, multi-color modes and palettes, play controls.. Next: Build Three.js voxel CA + UI controls (rules, views, colors). Site map: /. Style: dark-sci-lab. Color: neon-cyan-magenta (#22d3ee). Audience: curious users, demo, education. Read AGENT.md, design.json (incl. siteMap), and SITE_MAP.md first.",
+      "template": "static-trial",
+      "briefVersion": 1
+    },
+    {
+      "id": "worldmonitor",
+      "name": "World Monitor",
+      "nameZh": "全球情報監控",
+      "path": "/home/homea/dev/worldmonitor",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "開源即時全球 OSINT 情報 dashboard（Docker 完整版：Redis seed 數據層）。App Hub 開關。Tailscale 手機開。",
+      "stack": "Docker: nginx+API + Redis + AIS relay · TypeScript",
+      "tags": [
+        "osint",
+        "geopolitics",
+        "map",
+        "mcp",
+        "intelligence",
+        "tailscale",
+        "daily",
+        "docker",
+        "redis"
+      ],
+      "ports": {
+        "ui": 3000,
+        "api": 3000
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-07-24",
+      "updatedAt": "2026-07-24",
+      "notes": "Docker full stack under ~/dev/worldmonitor. WM_MODE=docker (default). Keys in .env (chmod 600). See KEYS.md. Seed log: ~/apps/_meta/logs/worldmonitor-seed.log. AIS needs AISSTREAM_API_KEY (idle without).",
+      "grokHint": "Open /home/homea/dev/worldmonitor. Docker compose on :3000. start.sh/stop.sh. API keys in .env. Seeders: ./scripts/run-seeders.sh"
+    },
+    {
+      "id": "fitness-coach",
+      "name": "fitness-coach",
+      "nameZh": "私人AI健身教練",
+      "path": "/home/homea/apps/daily/fitness-coach",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "根據個人資料、Evolt 360 身體成分同健身房器材，自動生成個人化訓練計劃，並用每日回饋追蹤同調整。",
+      "goal": "開發一個可在本地運行的私人健康與健身教練 Web App：根據用戶資料、Evolt 360 報告、健身房器材自動生成個人化訓練計劃，並透過每日回饋持續追蹤進度與調整訓練。",
+      "inScope": "用戶資料管理\nEvolt 360 報告上傳與關鍵數據\n健身房器材相片與標註\n目標設定（主/次、時間框架）\n訓練計劃自動生成（每週時間表 + 每日細節）\n每日訓練執行與回饋\n資料庫儲存與長期追蹤\n目標進度分析與趨勢圖\n每日回饋後自動更新計劃並標示改動原因\n手機優先介面",
+      "outOfScope": "多用戶帳號／登入系統\n真實付款\n公開雲端部署\n穿戴裝置即時同步\n專業醫療診斷",
+      "acceptance": "./start.sh 可啟動\n本機 URL 可開啟且核心流程可走完\n可輸入資料、生成計劃、提交回饋、自動更新下一課\n進度頁有圖表與文字評估\nREADME 有安裝啟動步驟\nAGENT.md 已更新",
+      "nextTask": "實作完整可運行 MVP：用戶資料、Evolt 360、器材庫、目標、計劃生成、每日訓練回饋、自動更新計劃、進度分析與圖表。",
+      "priority": "P0",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "React + Vite + Express + JSON file DB",
+      "dbType": "json-file",
+      "tags": [
+        "daily",
+        "fullstack-db",
+        "app-hub",
+        "database"
+      ],
+      "ports": {
+        "ui": 5191,
+        "api": 3006
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-08-18",
+      "updatedAt": "2026-08-18",
+      "lastChange": "Created via App Hub 2026-08-18",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。讀 AGENT.md / AGENT_PROMPT.md。",
+      "referenceUrl": null,
+      "siteStyle": "dashboard",
+      "colorTheme": "teal",
+      "audience": "personal",
+      "primaryColor": "#0d9488",
+      "siteMap": "/ 今日訓練\n/profile 個人資料\n/evolt Evolt 360\n/gym 器材庫\n/goals 目標\n/plan 訓練計劃\n/progress 進度分析\n/history 訓練紀錄",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "今日訓練"
+        },
+        {
+          "path": "/profile",
+          "title": "個人資料"
+        },
+        {
+          "path": "/evolt",
+          "title": "Evolt 360"
+        },
+        {
+          "path": "/gym",
+          "title": "器材庫"
+        },
+        {
+          "path": "/goals",
+          "title": "目標"
+        },
+        {
+          "path": "/plan",
+          "title": "訓練計劃"
+        },
+        {
+          "path": "/progress",
+          "title": "進度分析"
+        },
+        {
+          "path": "/history",
+          "title": "訓練紀錄"
+        }
+      ],
+      "siteMapSummary": "/ · /profile · /evolt · /gym · +4",
+      "refTech": null,
+      "techSummary": "Local fullstack: React+Vite mobile-first UI, Express API, file-backed database under server/data, deterministic coach engine with optional SpaceXAI (xAI) enhancement.",
+      "codingLanguage": "JavaScript (React + Express)",
+      "refDatabase": "JSON file + structured local store (SQLite-ready)",
+      "refFrameworks": "React, Vite, Express, Tailwind",
+      "design": {
+        "siteStyle": "dashboard",
+        "colorTheme": "teal",
+        "audience": "personal",
+        "primaryColor": "#0d9488",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "今日訓練"
+          },
+          {
+            "path": "/profile",
+            "title": "個人資料"
+          },
+          {
+            "path": "/evolt",
+            "title": "Evolt 360"
+          },
+          {
+            "path": "/gym",
+            "title": "器材庫"
+          },
+          {
+            "path": "/goals",
+            "title": "目標"
+          },
+          {
+            "path": "/plan",
+            "title": "訓練計劃"
+          },
+          {
+            "path": "/progress",
+            "title": "進度分析"
+          },
+          {
+            "path": "/history",
+            "title": "訓練紀錄"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/daily/fitness-coach. Template fullstack-db (React + Vite + Express + JSON file DB). UI :5191 API :3006. Data under data/ or server/data/. Goal: 開發一個可在本地運行的私人健康與健身教練 Web App：根據用戶資料、Evolt 360 報告、健身房器材自動生成個人化訓練計劃，並透過每日回饋持續追蹤進度與調整訓練。. Next: 實作完整可運行 MVP：用戶資料、Evolt 360、器材庫、目標、計劃生成、每日訓練回饋、自動更新計劃、進度分析與圖表。. Site map: / · /profile · /evolt · /gym · +4. Style: dashboard. Color: teal (#0d9488). Audience: personal. Read AGENT.md, design.json (incl. siteMap), and SITE_MAP.md first.",
+      "template": "fullstack-db",
+      "briefVersion": 1
+    },
+    {
+      "id": "5s-dashboard",
+      "name": "5s-dashboard",
+      "nameZh": "5S 長勝台",
+      "path": "/home/homea/apps/daily/5s-dashboard",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "課堂 S1–S4 長勝台。手動上傳 PDF 同貼 HKEX URL。自動抓取失敗唔會令個 app 停用。唔係買賣建議。",
+      "goal": "課堂 S1–S4 長勝台。手動上傳 PDF 同貼 HKEX URL。自動抓取失敗唔會令個 app 停用。唔係買賣建議。",
+      "inScope": "課堂 S1–S4 總覽、詳情算式、手動 PDF、披露易 URL、覆核、四輪 worker",
+      "outOfScope": "S5\n買賣建議\n改 ~/5s 鎖定規則",
+      "acceptance": "App starts with ./start.sh\nActive URL loads without console errors\nPrimary UI matches chosen style/color/audience at a glance\nSite map primary routes reachable or stubbed\nAGENT.md exists and is up to date",
+      "nextTask": "用真實年報試人手覆核同四輪抓取",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "Next.js + SQLite",
+      "dbType": "sqlite",
+      "tags": [
+        "daily",
+        "next",
+        "sqlite",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5192,
+        "api": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-10-02",
+      "updatedAt": "2026-10-02",
+      "lastChange": "2026-10-02 總覽可按網址篩選，手動上傳 PDF 已驗證",
+      "notes": "端口 5192。種子係課堂手冊同管道測試，唔係即日抽取。披露易冇公開 REST。",
+      "referenceUrl": null,
+      "siteStyle": null,
+      "colorTheme": null,
+      "audience": null,
+      "primaryColor": null,
+      "siteMap": "/ 總覽\n/filings 新財報\n/review 覆核\n/settings 設定\n/stock/[code] 詳情",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "總覽"
+        },
+        {
+          "path": "/filings",
+          "title": "新財報"
+        },
+        {
+          "path": "/review",
+          "title": "覆核"
+        },
+        {
+          "path": "/settings",
+          "title": "設定"
+        },
+        {
+          "path": "/stock/[code]",
+          "title": "詳情"
+        }
+      ],
+      "siteMapSummary": "/ · /filings · /review · /settings · /stock/[code]",
+      "refTech": null,
+      "techSummary": null,
+      "codingLanguage": null,
+      "refDatabase": null,
+      "refFrameworks": null,
+      "design": {
+        "siteStyle": "dashboard",
+        "colorTheme": "ink",
+        "audience": "personal",
+        "primaryColor": "#e2b15a",
+        "density": "compact",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "總覽"
+          },
+          {
+            "path": "/filings",
+            "title": "新財報"
+          },
+          {
+            "path": "/review",
+            "title": "覆核"
+          },
+          {
+            "path": "/settings",
+            "title": "設定"
+          },
+          {
+            "path": "/stock/[code]",
+            "title": "詳情"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/daily/5s-dashboard. Next.js + SQLite. UI :5192. Classroom S1–S4 dashboard, manual PDF first. Not advice. Read AGENT.md.",
+      "template": "static-trial",
+      "briefVersion": 1
+    },
+    {
+      "id": "stock-4s-dashboard",
+      "name": "stock-4s-dashboard",
+      "nameZh": "股票4S分析",
+      "path": "/home/homea/apps/trials/stock-4s-dashboard",
+      "category": "trial",
+      "lifecycle": "trial",
+      "description": "5S 法 S1–S4 分析 dashboard",
+      "goal": "5S 法 S1–S4 分析 dashboard",
+      "inScope": "Core happy-path UI\nBasic data flow if template has DB\nMatch siteStyle / color / audience",
+      "outOfScope": "Auth / payments\nPublic cloud deploy\nComplex multi-user roles",
+      "acceptance": "App starts with ./start.sh\nActive URL loads without console errors\nPrimary UI matches chosen style/color/audience at a glance\nSite map primary routes reachable or stubbed\nAGENT.md exists and is up to date",
+      "nextTask": "Scaffold UI to match design constraints; implement first acceptance criterion.",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "React + Vite",
+      "dbType": null,
+      "tags": [
+        "trial",
+        "react-trial",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5193,
+        "api": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-10-07",
+      "updatedAt": "2026-10-07",
+      "lastChange": "Created via App Hub 2026-10-07",
+      "notes": "由 App Hub 建立。用 Grok：`grok --cwd <path>`。讀 AGENT.md / AGENT_PROMPT.md。",
+      "referenceUrl": null,
+      "siteStyle": null,
+      "colorTheme": null,
+      "audience": null,
+      "primaryColor": null,
+      "siteMap": "/ 首頁",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "首頁"
+        }
+      ],
+      "siteMapSummary": "/",
+      "refTech": null,
+      "techSummary": null,
+      "codingLanguage": null,
+      "refDatabase": null,
+      "refFrameworks": null,
+      "design": {
+        "siteStyle": null,
+        "colorTheme": null,
+        "audience": null,
+        "primaryColor": null,
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "首頁"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/trials/stock-4s-dashboard. Template react-trial (React + Vite). UI :5193. Goal: 5S 法 S1–S4 分析 dashboard. Next: Scaffold UI to match design constraints; implement first acceptance criterion.. Site map: /. Read AGENT.md, design.json (incl. siteMap), and SITE_MAP.md first.",
+      "template": "react-trial",
+      "briefVersion": 1
+    },
+    {
+      "id": "hkex-filings",
+      "name": "hkex-filings",
+      "nameZh": "港股財報瀏覽器",
+      "path": "/home/homea/apps/daily/hkex-filings",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "只讀瀏覽 ~/5s 已下載財報，並顯示 S1–S4 篩選。S4 預設名單係 Keith 的 311 個代號；打劫價由 calc_gates 重算。",
+      "goal": "Read ~/5s filings and show S1–S4 from a local snapshot. S4 default list is Keith's 311-code CSV. Raid figures come from calc_gates.judge_s4. Do not write ~/5s.",
+      "inScope": "Search with paging\nStock page and filing page\nS1–S3 HSI screen\nS4 screen from Keith's code list\nQuote cache and CSV export\nPath jail, read-only sqlite",
+      "outOfScope": "Auth\nWriting or re-extracting ~/5s\nRewriting calc_gates formulas\nClassroom app on 5192 and the trial dashboard on 5193\nPublic cloud deploy",
+      "acceptance": "App starts with ./start.sh\nActive URL loads without console errors\nPrimary UI matches chosen style/color/audience at a glance\nSite map primary routes reachable or stubbed\nAGENT.md exists and is up to date",
+      "nextTask": "Open one annual filing and check every extracted figure still shows its raw label.",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nAssigned ports\nApp Hub registry fields",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\nUpdate AGENT.md Last change",
+      "stack": "Flask",
+      "dbType": "sqlite-readonly",
+      "tags": [
+        "daily",
+        "flask",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5194,
+        "api": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-10-09",
+      "updatedAt": "2026-10-11",
+      "lastChange": "2026-10-11: S4 default list is Keith's CSV code column. Raid recalculated by calc_gates. Market data from the quote cache unless HKEX_MARKET_FETCH=1.",
+      "notes": "Reads /home/homea/5s only. Port 5194. S1–S3 stay the HSI set. S4 universe is the 311 codes in raid-candidates-pb-cr-filter-ref.csv; CSV numbers are not used. Rebuild with ./bin/rebuild-screen (.venv).\n\n【Fincept 整合 — 2026-11-08】只喺 STAGING 試，prod 未改：\n  • staging 新增 valuation_comps.py + 「市場估值」面板（EV/EBITDA、市值、EV、收入增長、淨利率）。\n    EV/EBITDA 來自 Yahoo Finance（經 Fincept Terminal 嘅 TradingCompsAnalyzer），\n    港股 P/E 來自 AAStocks（Yahoo 唔提供港股 P/E）。純顯示，唔參與 5S 閘門。\n  • Yahoo 港股代號必須 4 位右靠（0700.HK、0005.HK）。700.HK 同 00700.HK 都 404，\n    而且 404 會靜靜回 0 唔報錯 — 已當成「無報價」處理。\n  • 分項結論（71 隻 HSI 有決定閘門）：Fincept health 對 5S 有信號但唔夠入閘。\n    全部 54 隻 AUC 0.718；只計輸入完整嘅 31 隻跌到 0.596。\n    第一版 8 隻 PoC 嘅 +15.8 分分離度係輸入不完整造成嘅假象（當時 0/8 完整）。\n    只有 Profitability（完整輸入 AUC 0.687）同 Efficiency（0.674）仍然有效；\n    Leverage 完整輸入時反向（0.414），Growth 完全無信號（0.500）。\n  • 報告：~/.hermes/cache/scratch/fincept-5s-report-20261108.md\n  • Script：~/apps/bin/{batch_extract_hsi.py, add_bs_totals.py, fincept-5s-scale.py,\n    fincept_5s_stats.py, fincept_components.py, fincept_5s_report.py}\n  • 樣本：HSI 成分股 85 隻（已剔除銀行／保險／交易所），80 隻成功產生 calc.json。\n  • 閘門邏輯未改：calc_gates.py mtime 2026-10-17，total_equity 於閘門出現 0 次，\n    COE 一律讀 equity_owners。5S production DB 未寫入。\n",
+      "referenceUrl": null,
+      "siteStyle": "dashboard",
+      "colorTheme": "ink",
+      "audience": "Keith, reading downloaded HKEX filings",
+      "primaryColor": "#e2b15a",
+      "siteMap": "/ 搜尋\n/stock/[code] 一隻股票\n/filing/[code]/[date]/[kind] 一份財報\n/screen/s1 S1 速勝\n/screen/s2 S2 穩選\n/screen/s3 S3 時機\n/screen/s4 S4 打劫\n/screen/stock/[code] 5S 摘要",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "搜尋"
+        },
+        {
+          "path": "/stock/[code]",
+          "title": "一隻股票"
+        },
+        {
+          "path": "/filing/[code]/[date]/[kind]",
+          "title": "一份財報"
+        },
+        {
+          "path": "/screen/s1",
+          "title": "S1 速勝"
+        },
+        {
+          "path": "/screen/s2",
+          "title": "S2 穩選"
+        },
+        {
+          "path": "/screen/s3",
+          "title": "S3 時機"
+        },
+        {
+          "path": "/screen/s4",
+          "title": "S4 打劫"
+        },
+        {
+          "path": "/screen/stock/[code]",
+          "title": "5S 摘要"
+        }
+      ],
+      "siteMapSummary": "/ · /stock/[code] · /filing/[code]/[date]/[kind] · /screen/s1 · +4",
+      "refTech": null,
+      "techSummary": null,
+      "codingLanguage": null,
+      "refDatabase": null,
+      "refFrameworks": null,
+      "design": {
+        "siteStyle": "dashboard",
+        "colorTheme": "ink",
+        "audience": "Keith, reading downloaded HKEX filings",
+        "primaryColor": "#e2b15a",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "搜尋"
+          },
+          {
+            "path": "/stock/[code]",
+            "title": "一隻股票"
+          },
+          {
+            "path": "/filing/[code]/[date]/[kind]",
+            "title": "一份財報"
+          },
+          {
+            "path": "/screen/s1",
+            "title": "S1 速勝"
+          },
+          {
+            "path": "/screen/s2",
+            "title": "S2 穩選"
+          },
+          {
+            "path": "/screen/s3",
+            "title": "S3 時機"
+          },
+          {
+            "path": "/screen/s4",
+            "title": "S4 打劫"
+          },
+          {
+            "path": "/screen/stock/[code]",
+            "title": "5S 摘要"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/daily/hkex-filings. Flask on :5194. Read-only over ~/5s. S1–S4 screen is served from var/screen/snapshot.json. S4 default rows are Keith's CSV codes; recalculate raid with calc_gates and do not trust CSV numbers. Do not write ~/5s. Do not touch ports 5192 or 5193. Read AGENT.md first.",
+      "template": "static-trial",
+      "briefVersion": 2
+    },
+    {
+      "id": "lee-brain-dashboard",
+      "name": "第二大腦 · 交換站（唯讀）",
+      "nameZh": "第二大腦交換站（唯讀）",
+      "path": "/home/homea/文件/deepseek-harness/default-workspace/lee-brain-build",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "2026-10-27 P4/C：dashboard 已退場（/dashboard/ → 410），呢張卡開 :5199 交換站首頁（文件下載、artifacts/exports/backups 路徑）；狀態／活動請去 AI Hub「治理」。",
+      "stack": "Python ThreadingHTTPServer（scripts/serve_dashboard.py）＋靜態 HTML/CSS/JS",
+      "tags": [
+        "lee-brain",
+        "second-brain",
+        "multi-agent",
+        "monitor",
+        "tailscale",
+        "hermes"
+      ],
+      "ports": {
+        "ui": 5199,
+        "api": 5199
+      },
+      "startCmd": "systemctl --user start lee-brain-artifacts.service",
+      "stopCmd": "systemctl --user stop lee-brain-artifacts.service",
+      "openPath": "/",
+      "createdAt": "2026-10-22",
+      "updatedAt": "2026-10-27",
+      "notes": "systemd user service `lee-brain-web.service`。**Tailscale-only app**：serve_dashboard.py 刻意 bind config `dashboard.bind`（Tailscale IP），loopback 開唔到 → App Hub 已加 tsIp fallback health check。手機經 Tailscale 開 http://100.83.113.114:5199/dashboard/index.html。另有 :5198 exports/artifacts 交換站（同一 service）。Dashboard 頁面由 5 分鐘 timer `dashboard` job 自動生成（build_dashboard.py）。 | 2026-10-27 P2：主入口移至 AI Hub 治理 view；本頁未停用，只作唯讀 fallback。 | 2026-10-27 P4：入口正式退場（App Hub 卡改名「內部唯讀 · 已遷移」）。**未停 service**：`http://100.83.113.114:5199/artifacts/...` 仍係 db_pointers 使用中（實測 financials.db 200），停 service 會斷交換站；如要完全停用，要先遷移 artifacts 到新端點。 | 2026-10-27 Keith 決定 (A)：維持現狀 —— :5199 繼續做內部 artifacts/exports 交換站＋唯讀 fallback；入口已在 AI Hub「治理」view，本卡唔停用、唔搬遷。 | 2026-10-27 P4/C：lee-brain-web.service 已 disable；改由 lee-brain-artifacts.service（ai-hub deploy/brain-artifacts-server.mjs）serve :5199 三個白名單目錄；/dashboard/* → 410；rollback 見合併計劃 §16.4。 | App Hub start/stop 已改指 lee-brain-artifacts.service（舊 lee-brain-web.service 已 disabled）。",
+      "grokHint": "Repo: /home/homea/文件/deepseek-harness/default-workspace/lee-brain-build。serve: scripts/serve_dashboard.py（lee-brain-web.service）。Build: scripts/build_dashboard.py。Spec: handoff/OPERATIONS_MANUAL_LEE.md §0。改 dashboard 前先讀 AGENTS.md + infra/write-scope.yaml（scripts/** = Lee 批）。"
+    },
+    {
+      "id": "company-asp-mobile",
+      "name": "company-asp-mobile",
+      "nameZh": "公司系統手機外層",
+      "path": "/home/homea/apps/daily/company-asp-mobile",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "Scheme F Phase1：手機 UI+BFF（Flask :5200），經 Tailscale 只讀 GET 公司 ASP（192.168.1.238）。唔改舊 server；客戶 find POST 暫 stub。",
+      "goal": "手機可用選擇員工欄位圖＋客戶篩選欄位圖；零寫入 238。",
+      "inScope": "healthz\nmenu GET\navailablefilter field map\ncustomerfilter field map\nmobile UI bottom nav",
+      "outOfScope": "POST to ASP\nwrite/restart 238\nStaff/Invoice/Service Phase1\npublic internet expose",
+      "acceptance": "./start.sh listens on 5200\n/healthz 200\nGET filter-map works\nno POST to 238",
+      "nextTask": "等 Keith ASP copy 或批準 read adapter 再開 Customer find",
+      "priority": "P1",
+      "doNotBreak": "GET-only asp_client\nstart.sh/stop.sh\nport 5200\nnever touch 192.168.1.238",
+      "definitionOfDone": "Smoke health + filter-map OK on homea",
+      "stack": "Flask BFF + mobile HTML",
+      "dbType": "none",
+      "tags": [
+        "daily",
+        "mobile",
+        "asp",
+        "tailscale",
+        "readonly",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5200,
+        "api": 5200
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-10-23",
+      "updatedAt": "2026-10-23",
+      "notes": "Iron rule: GET-only to 192.168.1.238. systemd user unit company-asp-mobile.service optional (not auto-enabled).",
+      "grokHint": "Open /home/homea/apps/daily/company-asp-mobile. Port 5200. Tailscale http://100.83.113.114:5200/ . Never POST to 238."
+    },
+    {
+      "id": "grok-mobile",
+      "name": "Grok Build Mobile",
+      "nameZh": "Grok Build 手機控制台",
+      "path": "/home/homea/apps/daily/grok-mobile",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "喺手機 browser（經 Tailscale）控制本機 Grok Build：對話、tool call、思考、session 重播、model／reasoning effort 切換。Node（零 dependency）SSE + Grok ACP。",
+      "stack": "Node (zero-dep) + SSE + Grok ACP WebSocket + vanilla JS",
+      "tags": [
+        "grok",
+        "agent",
+        "phone",
+        "tailscale",
+        "control",
+        "chat"
+      ],
+      "ports": {
+        "ui": 5202,
+        "api": 5202
+      },
+      "startCmd": "systemctl --user start grok-mobile",
+      "stopCmd": "systemctl --user stop grok-mobile",
+      "openPath": "/",
+      "createdAt": "2026-10-24",
+      "updatedAt": "2026-10-24",
+      "notes": "手機首選 URL：https://homea-gtr-pro.tail8f3151.ts.net:5201/?token=…（喺部機跑 ~/apps/daily/grok-mobile/url.sh 會印）。Hub／Tailscale IP 用 HTTP :5202，會出 token 登入頁。內部 ACP port 2420 只綁 127.0.0.1；token 喺 ~/.config/grok-mobile/token。",
+      "grokHint": "Open /home/homea/apps/daily/grok-mobile (server.mjs + public/). systemctl --user status grok-mobile; get URL via ./url.sh. Grok ACP serve on 127.0.0.1:2420, UI 0.0.0.0:5202, tailscale serve https 5201 → 127.0.0.1:5202."
+    },
+    {
+      "id": "ai-hub",
+      "name": "AI Hub — 統一控制台（主入口）",
+      "nameZh": "AI Hub 統一控制台（主入口）",
+      "path": "/home/homea/apps/daily/ai-hub",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "本機多 AI 統一控制台（Grok Build / DeepSeek Harness / Hermes Agent / Mock）：統一收件箱、live streaming、審批卡、transfer、broadcast、alert。Node 24 零 dependency + node:sqlite。2026-10-27 起整合第二大腦治理看板（唯讀讀 context.json）。",
+      "stack": "Node 24 (zero-dep) + node:sqlite + SSE + vanilla JS + ACP/gateway adapters",
+      "tags": [
+        "ai",
+        "agents",
+        "chat",
+        "hub",
+        "grok",
+        "hermes",
+        "dsh"
+      ],
+      "ports": {
+        "ui": 5203,
+        "api": 5203,
+        "db": null
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-10-25",
+      "updatedAt": "2026-10-27",
+      "notes": "v1 2026-10-25 交付：真 Grok/DSH/Hermes 經 Hub 收發已驗收；82 unit/integration + 54 E2E checks 全綠。Token: ~/.config/ai-hub/token（0600）。DB: ~/.local/share/ai-hub/hub.sqlite。未 import 舊 session、server unread 未實作（v1.1）。 | 2026-10-27 P2：App Hub 主入口卡；Hub 加 GET /api/board（治理 view），第二大腦 dashboard 降為唯讀 fallback。",
+      "grokHint": "Open ~/apps/daily/ai-hub. Node 24 ESM zero-dep: src/server.mjs (HTTP+SSE), src/store.mjs (node:sqlite), src/adapters/{acp,hermes,mcp,mock}.mjs, src/alerts.mjs, public/ (vanilla). Run tests: node --test 'test/**/*.test.mjs' (Node 24 needs glob, not directory). Port 5203. Contract: docs/contract.md."
+    },
+    {
+      "id": "ai-hub-https",
+      "name": "AI Hub (HTTPS)",
+      "nameZh": "AI Hub HTTPS 入口",
+      "path": "/home/homea/apps/daily/ai-hub",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "AI Hub 手機／對外 HTTPS 入口（Tailscale serve :5204 → :5203）。撳「開啟」會 302 去 https://homea-gtr-pro.tail8f3151.ts.net:5204/。細卡，方便手機用。",
+      "stack": "Tailscale serve TLS reverse proxy → AI Hub Node (5203)",
+      "tags": [
+        "ai",
+        "agents",
+        "https",
+        "tailscale",
+        "phone"
+      ],
+      "ports": {
+        "ui": 5203,
+        "api": 5203
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/go/secure",
+      "createdAt": "2026-10-27",
+      "updatedAt": "2026-10-27",
+      "notes": "實際 app 仍然係 :5203（HTTP，本機／Tailscale IP）；:5204 係 tailscaled HTTPS 反代（tailscale serve status 可查）。App Hub 卡片 URL 係 http://127.0.0.1:5203/go/secure → 302 → HTTPS，所以本機／手機都開到。"
+    },
+    {
+      "id": "ocr-web",
+      "name": "OCR Document Parser",
+      "nameZh": "Unlimited-OCR-2 本機文件解析",
+      "path": "/home/homea/apps/daily/ocr-web",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "上載 PDF／圖片／Office 文件，本機 ROCm GPU 用百度 Unlimited-OCR-2（33億參數）解析，結果存本地，可預覽、下載 Markdown 及原檔。手機經 Tailscale 一樣用到。",
+      "goal": "一個本機文件 OCR 解析 Web App：上載文件後用本機 GPU 跑 Unlimited-OCR-2 解析，結果保存到本機，提供預覽同下載。",
+      "inScope": "文件上載（手機／Tailscale）\nPDF／圖片／TXT／DOCX／PPTX 轉頁面圖\nUnlimited-OCR-2 本機 ROCm 推理\n多頁跨頁 context 解析\n解析結果存本地磁碟\n網頁預覽結果\n下載 Markdown 結果及原檔\n任務佇列與進度顯示",
+      "outOfScope": "多用戶帳號／登入\n雲端 OCR API\n公開部署\n自動批次處理整批年報\nOCR 結果直接取代 5S 鎖定規則嘅財務數字來源",
+      "acceptance": "./start.sh 可啟動\nhttp://127.0.0.1:5205 可開啟並上載檔案\n任務完成後可預覽文字及下載 Markdown\n模型狀態喺頁面可見\n手機經 Tailscale 可用\nREADME 有安裝啟動步驟",
+      "priority": "P1",
+      "doNotBreak": "start.sh / stop.sh\nPort 5205\nApp Hub registry fields\n5S 數字來源規則（OCR 唔可以取代 download_filing.py）",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\n真實 OCR 一頁並核對輸出\nUpdate AGENT.md Last change",
+      "stack": "FastAPI + uvicorn + Unlimited-OCR-2 (ROCm) + SQLite job store",
+      "dbType": "sqlite",
+      "tags": [
+        "daily",
+        "ocr",
+        "unlimited-ocr",
+        "vlm",
+        "pytorch",
+        "rocm",
+        "local-ai",
+        "pdf"
+      ],
+      "ports": {
+        "ui": 5206,
+        "api": 5206
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-10-30",
+      "updatedAt": "2026-10-30",
+      "lastChange": "Created 2026-10-30 (Unlimited-OCR-2 local parser)",
+      "notes": "模型 venv 喺 /home/homea/ocr2/.venv（python3.10 + torch 2.13.0 ROCm 7.2）。HF cache 喺 /home/homea/ocr2/hf_cache。首次提交任務時 lazy load 模型（約 6.7GB）。GPU: AMD Radeon 8060S Strix Halo (gfx1151)，必須用 ROCm 7.2 wheel，6.4/7.0 會 crash。work/ 放上載檔案、頁面圖同結果；data/jobs.db 存任務。Tailscale serve 5205 → 本機 5206（serve 會佔 port，所以唔可以直接用 5205）。",
+      "referenceUrl": "https://huggingface.co/baidu/Unlimited-OCR-2",
+      "siteStyle": "dashboard",
+      "colorTheme": "cyan",
+      "audience": "personal",
+      "primaryColor": "#0ea5e9",
+      "siteMap": "/ 上載與任務",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "上載與任務"
+        }
+      ],
+      "siteMapSummary": "/",
+      "refTech": null,
+      "techSummary": "FastAPI + uvicorn on :5205, Unlimited-OCR-2 (3.3B DeepSeek-V2 MoE + DeepEncoder) via transformers with trust_remote_code, ROCm 7.0 PyTorch on Radeon 8060S (gfx1151). PDF to 300 DPI PNG via PyMuPDF, Office via LibreOffice headless. SQLite job store at data/jobs.db, results on disk under work/.",
+      "codingLanguage": "Python (FastAPI)",
+      "refDatabase": "SQLite (job store)",
+      "refFrameworks": "FastAPI, uvicorn, transformers, PyMuPDF, Pillow",
+      "design": {
+        "siteStyle": "dashboard",
+        "colorTheme": "cyan",
+        "audience": "personal",
+        "primaryColor": "#0ea5e9",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "上載與任務"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/daily/ocr-web. Port 5205. Python venv at /home/homea/ocr2/.venv (python3.10, torch ROCm). Read AGENT.md and README.md first. Model: baidu/Unlimited-OCR-2, lazy-loaded on first job. HF cache /home/homea/ocr2/hf_cache. IMPORTANT: OCR output must NOT replace the locked 5S financial-figure source (download_filing.py + slice_statements.py).",
+      "template": "api-json",
+      "briefVersion": 1
+    },
+    {
+      "id": "hermes-bot",
+      "name": "Hermes Bot",
+      "nameZh": "Hermes Bot 多 Agent 控制台",
+      "path": "/home/homea/apps/daily/hermes-bot",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "用 Hermes Agent engine 做基建嘅多 agent 控制台：每個 agent 一個 YAML，隨時加減；agent 之間可以互通；master agent（Mary）可以 delegate 落其他 agent。每個 agent 獨立 provider/model（minimax-cn / deepseek）。",
+      "goal": "一個本機多 agent 統一控制台：自由加減 agent、agent 之間互通資料、設定 master agent 控制其他 agent，全部用自己嘅 cloud LLM。",
+      "inScope": "Agent registry（YAML + hot reload）\n每 agent 獨立 provider/model/cwd/toolsets\nMaster→Worker delegation\nAgent 間 message bus\n對話 streaming（Phase 1）\n排程（Phase 3）\nVault（Phase 3）\nPWA（Phase 4）",
+      "outOfScope": "多用戶帳號\n雲端部署\n公開 marketplace\n非 Hermes runtime（Phase 5 先）",
+      "acceptance": "./start.sh 可啟動\n/api/health 顯示引擎 import 全部 ok\n新增 agent YAML 後 2 秒內出現\nAgent 對話可 streaming\ndelegate 由 master 落 worker 並收到結果",
+      "priority": "P1",
+      "doNotBreak": "HERMES_BOT_HOST=127.0.0.1（app 只綁 loopback；Tailscale serve 擁有 tailnet 5207）\nstart.sh 用 env -i scrub 環境，新 env 變數要白名單加落 exec env 段\nWebSocket 需 ?token=<auth_token>（browser 第一次開要帶 token，之後用 cookie）",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\n真實 delegate 測試\nUpdate AGENT.md Last change",
+      "stack": "Python 3.11 (Hermes venv) + FastAPI + uvicorn + Hermes AIAgent + SQLite/SessionManager",
+      "dbType": "sqlite (Hermes state.db)",
+      "tags": [
+        "daily",
+        "agents",
+        "hermes",
+        "multi-agent",
+        "console",
+        "minimax",
+        "deepseek",
+        "local-ai"
+      ],
+      "ports": {
+        "ui": 5207,
+        "api": 5207
+      },
+      "startCmd": "./start.sh",
+      "stopCmd": "./stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-10-31",
+      "updatedAt": "2026-11-01",
+      "lastChange": "2026-11-01 — 加 hermes-bot-url.service 自動發布帶 token 嘅手機 URL",
+      "notes": "手機／另一部機（帶 token，第一次用）：http://homea-gtr-pro.tail8f3151.ts.net:5207/?token=BK-MAPJ8Y9jcyDBj3Mug\n之後 token 換咗 cookie，淨 URL 就得：http://homea-gtr-pro.tail8f3151.ts.net:5207/\n\n自動更新：hermes-bot-url.service 監察 data/auth_token.txt，把帶 token 嘅 URL 寫去 ~/.config/hermes-bot/phone-url.txt（0600）。\n手動攞：~/apps/daily/hermes-bot/tools/hermes_bot_url.sh\n\n【2026-11-01】app 收窄到綁 127.0.0.1:5207，tailscale serve --http=5207 proxy 去 127.0.0.1:5207 → hostname:5207 可用；raw 尾網 IP 已唔通。",
+      "referenceUrl": "https://hermes-agent.nousresearch.com/docs",
+      "siteStyle": "dashboard",
+      "colorTheme": "blue",
+      "audience": "personal",
+      "primaryColor": "#0a84ff",
+      "siteMap": "/ 對話與 agent 清單",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "對話"
+        }
+      ],
+      "siteMapSummary": "/",
+      "refTech": null,
+      "techSummary": "FastAPI + uvicorn on the Hermes engine virtualenv. Imports run_agent.AIAgent, agent.conversation_loop.run_conversation and acp_adapter.session.SessionManager through hb/engine_adapter.py. Agents are YAML files under agents/ with a 2-second poll watcher.",
+      "codingLanguage": "Python (FastAPI)",
+      "refDatabase": "SQLite (Hermes shared state.db)",
+      "refFrameworks": "FastAPI, uvicorn, Hermes Agent engine, PyYAML",
+      "design": {
+        "siteStyle": "dashboard",
+        "colorTheme": "blue",
+        "audience": "personal",
+        "primaryColor": "#0a84ff",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "對話"
+          }
+        ]
+      },
+      "grokHint": "Open /home/homea/apps/daily/hermes-bot. Port 5207. Runs on the Hermes engine venv (~/.hermes/hermes-agent/venv). Read AGENT.md and README.md FIRST — start.sh has three load-bearing details (env -i, HERMES_DISABLE_LAZY_INSTALLS=1, python -c) that break the engine import path if changed. App code lives in hb/ as a package, never as a top-level app.py.",
+      "template": "api-json",
+      "briefVersion": 1,
+      "tailscaleUrl": "http://homea-gtr-pro.tail8f3151.ts.net:5207/?token=BK-MAPJ8Y9jcyDBj3Mug",
+      "urlFile": "/home/homea/.config/hermes-bot/phone-url.txt"
+    },
+    {
+      "id": "dsh-web",
+      "name": "DeepSeek Harness Web",
+      "nameZh": "DeepSeek Harness 網頁控制台",
+      "path": "/home/homea/文件/deepseek-harness/default-workspace",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "DeepSeek Harness 官方 browser UI。本機 127.0.0.1:3080 行，經 Tailscale serve 對 tailnet 開放（https://homea-gtr-pro.tail8f3151.ts.net/）。dsh 刻意唔支援綁 0.0.0.0（會對網絡暴露 RCE），所以只經 Tailscale 走。",
+      "goal": "喺手機／另一部機用瀏覽器用 DeepSeek Harness，有齊 tool call、session、subagent 同檔案操作。",
+      "inScope": "dsh web 啟動同 Tailscale serve\nlaunch token 管理（每次重啟都會變）\nApp Hub 卡片同手機連結",
+      "outOfScope": "公開部署\n綁 0.0.0.0\n改 dsh 核心\n繞過 browser-trust fence",
+      "acceptance": "systemctl --user start dsh-web 可啟動\nurl.sh 印出嘅 URL 經 Tailscale 可開（HTTP 200／303）\nApp Hub 有卡片\n重啟後 token 更新，連結仍然 work",
+      "priority": "P1",
+      "doNotBreak": "dsh-web.service 綁 127.0.0.1（唔好改成 0.0.0.0）\nTailscale serve root 映射\nDSH_HOME=%h/.dsh\nWayland 環境變數（computer-use plugin 要）",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\n真實 Tailscale 連結測試",
+      "stack": "Node (@deepseek-ai/dsh) + Tailscale serve reverse proxy",
+      "dbType": "jsonl + json (dsh storages)",
+      "tags": [
+        "daily",
+        "dsh",
+        "deepseek",
+        "harness",
+        "agent",
+        "tailscale",
+        "web-ui"
+      ],
+      "ports": {
+        "ui": 3080,
+        "api": 3080
+      },
+      "startCmd": "systemctl --user start dsh-web",
+      "stopCmd": "systemctl --user stop dsh-web",
+      "openPath": "/",
+      "createdAt": "2026-10-31",
+      "updatedAt": "2026-10-31",
+      "lastChange": "2026-10-31 — 加入 App Hub，經 Tailscale serve 對外開放",
+      "notes": "手機／另一部機：https://homea-gtr-pro.tail8f3151.ts.net/hub/go/dsh （App Hub 嘅 /go/dsh 會讀當前 launch token 再導航過去）。\ndsh web 刻意唔支援 0.0.0.0（會對網絡暴露 RCE），維持 127.0.0.1:3080，由 tailscale serve 做 reverse proxy。\nlaunch token 每次重啟都變：dsh-web-url.service 自動追蹤 ~/tmp/dsh-web.log 並更新 ~/.dsh/web-url.txt（權限 0600）。\nApp Hub 同 dsh 喺同一個 Tailscale hostname 之下（/hub 同 /），咁 dsh 個 SameSite=Strict cookie 先唔會被跨站導航阻礙。",
+      "grokHint": "dsh web UI 跑喺 127.0.0.1:3080，systemd unit = dsh-web.service，Tailscale serve root → 3080。launch token 每次重啟都變：跑 ~/apps/daily/hermes-bot/tools/dsh_web_url.sh 攞當前 URL。唔好將 --host 改成 0.0.0.0（dsh 刻意唔支援，避免 RCE 暴露）。",
+      "referenceUrl": "https://www.npmjs.com/package/@deepseek-ai/dsh",
+      "siteStyle": "dashboard",
+      "colorTheme": "green",
+      "audience": "personal",
+      "primaryColor": "#30d158",
+      "siteMap": "/ 主控制台",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "DeepSeek Harness"
+        }
+      ],
+      "siteMapSummary": "/",
+      "refTech": null,
+      "techSummary": "DeepSeek Harness (@deepseek-ai/dsh) web profile. Node server on 127.0.0.1:3080 behind a Tailscale serve reverse proxy. A browser-trust fence guards the UI: the root path needs a launch token that dsh prints on startup, and the token is exchanged for a signed, authority-bound cookie.",
+      "codingLanguage": "Node (TypeScript)",
+      "refDatabase": "JSONL + JSON files under ~/.dsh/storages",
+      "refFrameworks": "@deepseek-ai/dsh, cordis, Tailscale serve",
+      "design": {
+        "siteStyle": "dashboard",
+        "colorTheme": "green",
+        "audience": "personal",
+        "primaryColor": "#30d158",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "DeepSeek Harness"
+          }
+        ]
+      },
+      "template": "api-json",
+      "briefVersion": 1,
+      "tailscaleUrl": "https://homea-gtr-pro.tail8f3151.ts.net/hub/go/dsh",
+      "urlFile": "/home/homea/.dsh/web-url.txt"
+    },
+    {
+      "id": "jiuwenswarm",
+      "name": "WorkSwarm (openJiuwen)",
+      "nameZh": "WorkSwarm 多 agent 協作工作台",
+      "path": "/home/homea/apps/daily/jiuwenswarm",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "openJiuwen 嘅 JiuwenSwarm（PyPI 名 workswarm）。Cluster mode 由 Leader 編排多個專職 agent；Swarmflow 用 Python script 做確定性多階段 workflow，支援 HITL（human / human_session 節點）；Skill 自演化；支援飛書／企微／釘釘／小藝／Telegram／Discord／Slack／WhatsApp。全部用 MiniMax-M3。",
+      "goal": "本機多 agent 協作工作台：Leader 拆解複雜任務、組隊、並行執行、整合成果。",
+      "inScope": "Single Agent mode / Cluster mode\nSwarmflow 確定性 workflow + HITL 人工閘\nSkill 自演化 + Skills Hub\n定時任務（cron）\nChannels（Telegram / 飛書 / 企微 等）\nTailscale serve 對外開放",
+      "outOfScope": "Kubernetes 集群部署（AgentOS Enterprise）\nvLLM 自建推理（已有 LM Studio）\n公開部署",
+      "acceptance": "systemctl --user start jiuwenswarm 可啟動\nhttp://127.0.0.1:5173 可開啟\nMiniMax-M3 實際 LLM 呼叫成功\nTailscale serve 5174 可開\nApp Hub 有卡片",
+      "priority": "P2",
+      "doNotBreak": "Python 3.11 venv（workswarm 要求 >=3.11,<3.14）\n全部服務綁 127.0.0.1（唔好改成 0.0.0.0）\nconfig/.env 嘅 API_BASE / API_KEY / MODEL_NAME\nPorts: frontend 5173 / web 19000 / gateway 19001 / agent_server 18092",
+      "definitionOfDone": "Acceptance criteria all pass\nSmoke open local URL\n真實 MiniMax-M3 呼叫測試",
+      "stack": "Python 3.11 + FastAPI + uvicorn + @deepseek-ai/dsh (workswarm 0.2.8) + Tailscale serve",
+      "dbType": "jsonl + json (~/.jiuwenswarm)",
+      "tags": [
+        "daily",
+        "workswarm",
+        "openjiuwen",
+        "multi-agent",
+        "swarm",
+        "hitl",
+        "skills",
+        "minimax",
+        "tailscale"
+      ],
+      "ports": {
+        "ui": 5173,
+        "api": 19000
+      },
+      "startCmd": "systemctl --user start jiuwenswarm",
+      "stopCmd": "systemctl --user stop jiuwenswarm",
+      "openPath": "/",
+      "createdAt": "2026-10-31",
+      "updatedAt": "2026-10-31",
+      "lastChange": "2026-10-31 — workswarm 0.2.8 裝好，MiniMax-M3 配置，Tailscale serve 5174",
+      "notes": "venv：/home/homea/apps/daily/jiuwenswarm/.venv（Python 3.11.15，uv 建）。wheel 由 GitHub release v0.2.8 裝（PyPI 仲係 0.2.7）。\nconfig：~/.jiuwenswarm/config/config.yaml + config/.env（API_BASE=https://api.minimaxi.com/v1，MODEL_NAME=MiniMax-M3，MODEL_PROVIDER=OpenAI，ENDPOINT_PROFILE=openai）。\nMiniMax 有 OpenAI-compatible route，唔使 Anthropic protocol。\n手機／另一部機：http://homea-gtr-pro.tail8f3151.ts.net:5174/（Tailscale serve HTTP proxy → 127.0.0.1:5173）。\n全部服務只綁 127.0.0.1，只有 Tailscale serve 對外開放。",
+      "grokHint": "WorkSwarm = openJiuwen jiuwenswarm，PyPI 名 workswarm。喺 /home/homea/apps/daily/jiuwenswarm，venv 用 Python 3.11（唔可以用 3.14）。systemd unit = jiuwenswarm.service。frontend 127.0.0.1:5173，Tailscale serve 5174 → 5173。config 喺 ~/.jiuwenswarm/config/。注意：jiuwenswarm-start 會 spawn 多個 process，stop 要用 systemctl，唔好淨係 kill frontend。",
+      "referenceUrl": "https://github.com/openJiuwen-ai/jiuwenswarm",
+      "siteStyle": "dashboard",
+      "colorTheme": "orange",
+      "audience": "personal",
+      "primaryColor": "#ff9500",
+      "siteMap": "/ 工作台",
+      "siteMapRoutes": [
+        {
+          "path": "/",
+          "title": "工作台"
+        }
+      ],
+      "siteMapSummary": "/",
+      "refTech": null,
+      "techSummary": "openJiuwen JiuwenSwarm (workswarm) 0.2.8. FastAPI + uvicorn backend, Vite frontend, cluster mode with a Leader orchestrating specialised agents, Swarmflow for deterministic Python-defined multi-stage workflows with human-in-the-loop nodes, skill self-evolution, and multi-channel access (Feishu, WeCom, DingTalk, Telegram, Discord, Slack, WhatsApp). Model access through an OpenAI-compatible endpoint.",
+      "codingLanguage": "Python (FastAPI) + TypeScript (frontend)",
+      "refDatabase": "JSONL + JSON files under ~/.jiuwenswarm",
+      "refFrameworks": "@deepseek-ai/dsh (workswarm), FastAPI, uvicorn, Pydantic, Playwright",
+      "design": {
+        "siteStyle": "dashboard",
+        "colorTheme": "orange",
+        "audience": "personal",
+        "primaryColor": "#ff9500",
+        "density": "default",
+        "fontScale": 1,
+        "siteMap": [
+          {
+            "path": "/",
+            "title": "工作台"
+          }
+        ]
+      },
+      "template": "api-json",
+      "briefVersion": 1,
+      "tailscaleUrl": "http://homea-gtr-pro.tail8f3151.ts.net:5174/"
+    },
+    {
+      "id": "tradingagents",
+      "name": "TradingAgents",
+      "nameZh": "多智能體交易分析",
+      "path": "/home/homea/apps/daily/tradingagents",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "TradingAgents（Apache-2.0, 119K stars）：LangGraph 多 agent LLM 金融交易框架。4 個分析員併行 → 多空辯論 → 風險三方辯論 → PM → Trader；決策記錄 → 到期對基準計 alpha → 反思餵返。MiniMax-M3 (minimax-cn) 驅動。Web UI（5212）：報告 + 信心分數圖示、追蹤股票（中文名/代號搜尋）、排程狀態、記憶日誌。每日 06:30 自動分析並 Telegram 通知。",
+      "goal": "用多 agent 辯論 + 記憶閉環做股票研究，支援 0700.HK 等港股代號。",
+      "inScope": "Yahoo / Alpha Vantage / EDGAR 數據；CLI 互動同 unattended；backtest 網格；記憶日誌同反思。",
+      "outOfScope": "唔做落單、唔做模擬成交、唔做投資建議。5S 數字唔可以用呢度出。",
+      "acceptance": "Web UI http://127.0.0.1:5212/ 顯示報告列表/狀態/記憶；./daily_run.sh 跑完 EXIT=0 並出中文報告到 ~/.tradingagents/logs/reports/<ticker>_<stamp>/（MD+HTML）；tradingagents-daily.timer Mon–Fri 06:30 自動跑並 Telegram 通知；同日唔重複跑。",
+      "stack": "Python 3.13 + LangGraph + Typer/Rich CLI",
+      "dbType": "markdown-log",
+      "tags": [
+        "daily",
+        "cli",
+        "agent",
+        "finance",
+        "langgraph",
+        "trading"
+      ],
+      "ports": {
+        "ui": 5212,
+        "api": 5212
+      },
+      "startCmd": "systemctl --user start tradingagents-web.service",
+      "stopCmd": "systemctl --user stop tradingagents-web.service",
+      "openPath": "/",
+      "createdAt": "2026-11-01",
+      "updatedAt": "2026-11-02",
+      "referenceUrl": "https://github.com/TauricResearch/TradingAgents",
+      "notes": "Web UI 127.0.0.1:5212（systemd tradingagents-web.service）。四個 tab：報告（信心圖示）/ 狀態 / 記憶 / 追蹤。追蹤清單 var/tracked.json = 21 隻港股藍籌（恒指成份股 20 隻 + 萬洲國際），代號用 Yahoo 拼法（4 位 + .HK）。CLI 仍用 ./run.sh。.env 有 MINIMAX_CN_API_KEY（0600）。報告 ~/.tradingagents/logs/reports/<ticker>_<stamp>/。每日 run：tradingagents-daily.timer（Mon–Fri 06:30）。VPN 繞過由 TRADINGAGENTS_DAILY_VPN_BYPASS=1 控制。追蹤股票唔會自動跑分析（TRADINGAGENTS_DAILY_TRACKED=1 先開）。",
+      "grokHint": "Open /home/homea/apps/daily/tradingagents. Web UI http://127.0.0.1:5212 (systemctl --user restart tradingagents-web.service). 追蹤清單喺 var/tracked.json。CLI: ./run.sh --ticker 0700.HK --date 2026-11-01 --analysts market --save. Daily: ./daily_run.sh (or --dry-run). Venv: .venv (Python 3.13). Config in .env.",
+      "lastChange": "2026-11-02 加追蹤股票（中文名/代號/部分名搜尋 → 列表揀選）+ 信心分數圖示（評級方向 × 1-10 信心，SVG gauge 一眼睇到）；temperature 0.3→0 收窄評級漂移；加 rating drift ledger；PM decision 加 **Confidence** 欄。"
+    },
+    {
+      "id": "workbuddy",
+      "name": "WorkBuddy",
+      "nameZh": "WorkBuddy 騰訊 AI 辦公",
+      "path": "/home/homea/apps/daily/workbuddy",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "騰訊 WorkBuddy：全場景 AI 辦公工作台。自主規劃、調用工具、生成文件（Word/Excel/PDF/Markdown），可接騰訊生態（企業微信／微信／QQ／飛書／釘钉）。桌面版係 Electron app，冇本機 web 介面；手機可以用官方網頁版（微信掃碼登入）。",
+      "goal": "用 WorkBuddy 做深度研究／文件／設計／開發任務，15 分鐘交報告。",
+      "inScope": "桌面程式（啟動 X11 視窗）；官方網頁版連結。",
+      "outOfScope": "唔代 Keith 登入（微信掃碼要本人做）；唔用內置雲模型處理機密文件（改用自訂模型）。",
+      "stack": "Electron 5.9.3 (Tencent)",
+      "dbType": "sqlite (~/.workbuddy/workbuddy.db)",
+      "tags": [
+        "daily",
+        "desktop",
+        "electron",
+        "agent",
+        "tencent",
+        "office"
+      ],
+      "ports": {
+        "ui": null,
+        "api": null
+      },
+      "externalUrl": "https://www.workbuddy.cn/app",
+      "startCmd": "/home/homea/apps/daily/workbuddy/start.sh",
+      "stopCmd": "/home/homea/apps/daily/workbuddy/stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-11-06",
+      "updatedAt": "2026-11-06",
+      "referenceUrl": "https://www.workbuddy.cn/",
+      "notes": "【狀態：桌面版起得到視窗，但 daemon 開唔到 → 部分功能用唔到】\nLinux 官方 deb 缺 IM native asset：workbuddy-editor-sdk-supervisor 整個 binary 唔喺 package 入面（daemon-bootstrap.js resolveImChannelsExtensionAssets 報 EXTENSION_ASSET_MISSING），daemon 連續 3 次起唔到就 'daemon recovery gave up: startup-consecutive-3'。5.9.3 / 5.6.2 / openKylin 5.4.5 三個版本都一樣缺 → 係騰訊 Linux 打包 bug，唔係本機問題。\n【安裝】sudo dpkg -i /home/homea/.hermes/cache/scratch/wb.deb（要 Keith 密碼）\n【啟動關鍵】Electron 行 ozone_platform_x11，Wayland session 要 explicit DISPLAY=:0 + XAUTHORITY=/run/user/1000/.mutter-Xwaylandauth.*，否則 'Missing X server or $DISPLAY'。另外必須 --disable-gpu，XWayland GPU process 會 launch failed error_code=1002 搞死成個 app。\n【無本機 web port】Electron 內部 ACP bridge 聽 127.0.0.1:18488，但所有路徑都 404，唔係 web UI。手機入口 = officialUrl https://www.workbuddy.cn/app（微信掃碼）。\n【資料】~/.workbuddy/（workbuddy.db、logs/、skills/、keyblob）",
+      "grokHint": "WorkBuddy 桌面版：/home/homea/apps/daily/workbuddy/start.sh（已經 set 好 DISPLAY/XAUTHORITY/--disable-gpu，唔好手動再行 bare binary）。官方網頁版 https://www.workbuddy.cn/app。Log 睇 ~/.workbuddy/logs/main.log。daemon 起唔到係官方 Linux 包缺 asset，唔好重試安裝。",
+      "lastChange": "2026-11-06 加卡：驗證 Linux deb 可裝、視窗可開；發現騰訊 Linux 包缺 workbuddy-editor-sdk-supervisor 導致 daemon 起唔到。start.sh 自帶 X11 env + --disable-gpu。"
+    },
+    {
+      "id": "tokyo-trip-v2",
+      "name": "Tokyo Trip v2",
+      "nameZh": "東京之旅網站 v2",
+      "path": "/home/homea/tokyo-trip-v2",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "東京之旅 2026（11月19至23日，四人：Keith、Jady、Poyi、LaiWai）互動網站 v2。多檔案結構（index.html＋assets/），323 張相全部獨立檔案，319 張重新搵高清原圖（1000px 闊），banner 用 Keith 原圖裁切（1600×655）。功能跟 v1：12 個主目錄掣、行程制定、四人分帳、localStorage 自動保存、交通表、飲食、風景、慶節參觀、購物、退稅攻略、Lightbox、航班掣、天氣掣。",
+      "goal": "出發前同旅途中用嘅行程／分帳／交通／美食／慶節一頁睇晒。",
+      "inScope": "本機靜態站（systemd tokyo-v2.service，127.0.0.1:5213）；Tailscale serve :5214；公開站：Cloudflare Worker + custom domain https://tokyo.keithleehk.com（永久，唔會換網址）。",
+      "outOfScope": "v1 舊站 floral-unit-35db 唔好掂；本機 quick tunnel（trycloudflare 網址會換）只作後備，唔係主入口。",
+      "stack": "靜態 HTML/CSS/JS + Python stdlib http server",
+      "dbType": "localStorage (瀏覽器端，key tokyo-trip-2026-v1)",
+      "tags": [
+        "daily",
+        "travel",
+        "tokyo",
+        "static",
+        "family",
+        "2026-11"
+      ],
+      "ports": {
+        "ui": 5213,
+        "api": null
+      },
+      "tailscaleUrl": "https://homea-gtr-pro.tail8f3151.ts.net:5214/",
+      "startCmd": "systemctl --user start tokyo-v2.service",
+      "stopCmd": "systemctl --user stop tokyo-v2.service",
+      "openPath": "/",
+      "createdAt": "2026-11-07",
+      "updatedAt": "2026-11-07",
+      "referenceUrl": "https://floral-unit-35db.homeasy.workers.dev",
+      "notes": "【部署 — 兩條路並存】\nPRIMARY 公開站: https://tokyo.keithleehk.com\n  Cloudflare Worker (Static Assets) + custom domain。永久網址，唔會再換。\n  源碼 /home/homea/tokyo-trip-v2/worker/{index.js,wrangler.toml,public/}\n  Deploy: /home/homea/apps/bin/deploy-worker.sh（自動讀 ~/.config/cloudflare/token，rsync，deploy）\n  Token: ~/.config/cloudflare/token (0600)；account id 7ab0007954349398b965b61ba804fb2f；\n  zone keithleehk.com id 998fbacf8eb8a5734f174936dc9e97ed\n  FALLBACK: https://tokyo-trip-v2.homeasy.workers.dev\n本機站: systemd tokyo-v2.service → serve_auth.py，listen 127.0.0.1:5213（只綁 loopback）\n  Tailscale serve :5214 → https://homea-gtr-pro.tail8f3151.ts.net:5214/\n  quick tunnel: systemd tokyo-v2-tunnel.service → cloudflared --url（⚠️ 每次開機換網址，只作後備）\n  最新 quick tunnel 網址: /home/homea/apps/bin/tokyo-v2-url（變咗會自動 Telegram 通知 Keith）\n\n【密碼保護】HTTP Basic Auth，users = keith / trip（同一密碼，四位旅伴共用）\n  Worker 版：PBKDF2-SHA256 100k iterations，hash 硬編碼喺 worker/index.js（Workers 無 bcrypt module，用 crypto.subtle PBKDF2）。\n  本機版：bcrypt hash 喺 ~/.config/tokyo-v2/htpasswd (0600，零明文)。\n  改密碼: /home/homea/apps/bin/tokyo-v2-set-password（互動式；改完記得重新 deploy Worker）。\n\n【⚠️ 兩個已踩過的坑】\n1. wrangler.toml 嘅 [assets] 必須有 run_worker_first = true，否則 Cloudflare 直接 serve 存在的\n   asset、Basic Auth 完全被繞過 → 房東電話同酒店電話會公開露出。\n2. custom domain 必須用 [[routes]] array-of-tables 語法；用 routes = [...] 會被 TOML 解析成\n   [assets] 嘅延伸而靜靜失效（deploy 顯示成功但冇 custom domain）。\n\n【⚠️ 部機 DNS】NordLynx link (DNS 103.86.99.100) 唔識新 subdomain，要\n  sudo bash /home/homea/apps/bin/fix-tokyo-dns.sh（寫 /etc/hosts + flush cache）。\n  朋友用自己手機唔受影響。\n\n【⚠️ 限制】Cloudflare Worker 係 static 託管 → Google 相簿加咗新相之後要重新\n  deploy-worker.sh 先見到（POST /api/album/sync 喺 edge 做唔到）。\n  本機版 tokyo-v2.service 仍保留做 live-sync 原點。\n\n【相片】323 個檔案，assets-manifest.json 記錄 path/bytes/width/height/sha256/alt/query。\n  319 張搵咗高清原圖，全部 1000px 闊、q80、實測無 upscale。\n  Google 相簿抓取: python3 /home/homea/tokyo-trip-v2/fetch_google_album.py <album link>\n  相簿: https://photos.app.goo.gl/hRAbDLwrmJP1u7Nc6（fetch_google_album.py 讀分享頁 HTML 嘅\n  lh3.googleusercontent.com/pw/<token> 圖片 URL，唔使 API key / 唔使登入）。\n  ⚠️ Google 相簿用 x-frame-options: SAMEORIGIN，冇 iframe 嵌入 → 用「撳掣跳去 + 本地鏡像」。\n  ⚠️ 頁面 URL 若帶 basic-auth credentials，fetch 相對路徑會被瀏覽器拒絕\n  （Request cannot be constructed from a URL that includes credentials）→ memAssetUrl() 用絕對路徑。\n\n【三張圖分工 — 唔好黐埋做】\n  assets/banner/hero.jpg  1600×655  頂部 banner = Keith 原圖裁切（offset y=450，四張臉完整）\n  assets/og-image.jpg     1280×426  hero-art 底圖 = v1 原檔浮世繪版畫，sha256 40d3508dad257119… 同 v1 一致，唔好覆蓋\n  assets/og-social.jpg    1200×630  <meta og:image> 社交預覽 = Keith 原圖裁切\n\n【v1 保護】v1 舊站 https://floral-unit-35db.homeasy.workers.dev 未動，\n  sha256 1c8c912b81c20e4c628f854d6ab62ddea70c425df500ff571e87676c84f722c6，線上仍 200 / 19,564,023 bytes。\n【驗證】reports/verify_tokyo_v2_photos.py（lee-brain repo）7 項檢查 PASS。\n【旅行完收埋】wrangler delete tokyo-trip-v2（Cloudflare 版）\n【⚠️ PBKDF2 iterations — 503 壞圖根因，2026-11-07 修正】\n  Workers Free 每次 invocation 只得 10 ms CPU。PBKDF2-SHA256 100,000 iterations 每次密碼檢查約 12 ms → 撞上限 → 隨機 5-10% 請求回 503 → 頁面圖片隨機壞掉。\n  已改為 1,000 iterations（約 0.14 ms）。實測：修正前 40 個請求有 2-4 個 503；修正後 40/40 全 200，323 張圖全站驗證零失敗。\n  改密碼：/home/homea/apps/bin/tokyo-v2-set-password（改完要重新產生 Worker 嘅 hash 並 deploy）。若日後再壞圖，先查 iterations 係咪被調高。\n\n【內容更新 2026-11-08】新增「住宿附近再推介四個人氣 Outlet」section：\n  新增 outlet：南町田グランベリーパーク（約220店，江之島最近）、三井 OUTLET PARK 横浜ベイサイド（約170店）、\n  御殿場 Premium Outlets（290店，日本最大）、佐野 Premium Outlets（180店）。\n  原有 入間 outlet 文案已修正（由池袋最近 → 距江之島最遠，建議安排喺池袋嗰兩日）。\n  每個 outlet 有：地址／店數／營業時間／品牌／池袋交通／片瀬交通／貼士，\n  連同「俾司機睇（日文大字卡）」按鈕。相片用 Wikimedia Commons，睇圖逐一核對過。\n  Gotemba 喺 Commons 只有 1 張真 outlet 相（其餘係巴士），所以佢冇相片集，只有一張可放大。\n  相片處理 script：add_outlets.py / add_outlet_galleries.py / trim_outlet_galleries.py / dedupe_outlet_galleries.py\n",
+      "grokHint": "永久網址 = https://tokyo.keithleehk.com（Cloudflare Worker）。改完站跑 /home/homea/apps/bin/deploy-worker.sh 重新 deploy。Google 相簿加新相 → 本機版即刻見到，Cloudflare 版要重新 deploy。banner 換原圖：先改 banner-source/ 再 cp 去 assets/banner/hero.jpg（唔好改名）。og-image.jpg 係 v1 浮世繪版畫，唔好覆蓋。",
+      "lastChange": "2026-11-07 部署上 Cloudflare Workers + custom domain tokyo.keithleehk.com（永久免費網址）；App Hub 張卡加 externalUrl 指向永久網址；Worker 做 Basic Auth；323 張圖線上全 200 驗證",
+      "externalUrl": "https://tokyo.keithleehk.com",
+      "publicUrl": "https://tokyo.keithleehk.com"
+    },
+    {
+      "id": "fincept-terminal",
+      "name": "Fincept Terminal",
+      "nameZh": "Fincept 金融終端",
+      "path": "/home/homea/apps/daily/fincept-terminal",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "Fincept Terminal v4.5.1（AGPL-3.0 open-source 版）：原生 C++20 桌面金融終端，Qt6 UI + 內嵌 Python 3.11 分析引擎，單一 binary、冇 Electron。功能：Equity Research、Portfolio、News、Node Editor、DCF、組合優化、VaR/Sharpe、衍生品定價、18 模組 QuantLib、37 個 trader/economic/geopolitics AI agent、100+ 數據連接器（FRED、IMF、World Bank、DBnomics、AkShare、Polygon、Kraken、Yahoo Finance）、crypto/equity feed + paper trading、16 個 broker 整合、視覺化 node editor、MCP tools、AI Quant Lab。",
+      "goal": "用機構級金融分析工具做研究、估值、組合管理同量化實驗，全部喺自己部機行。",
+      "inScope": "桌面程式（本機 GUI 視窗）；open build 免費版，自帶 API key（支援 OpenAI／Anthropic／Gemini／Groq／DeepSeek／OpenRouter／Ollama）。",
+      "outOfScope": "Enterprise 私有版（$15-45/user/mo）唔喺呢度；Fincept cloud account 嘅 credits 同 managed live routing 都要付費；唔幫 Keith 做實盤交易落單；唔代填任何 API key。",
+      "stack": "C++20 / Qt 6.10 / embedded Python 3.11 / Chromium (QtWebEngine)",
+      "dbType": "SQLite (QSQLITE) — app 自帶 driver plugin喺 ./plugins/sqldrivers",
+      "tags": [
+        "daily",
+        "desktop",
+        "finance",
+        "quant",
+        "qt6",
+        "research",
+        "trading"
+      ],
+      "ports": {
+        "ui": null,
+        "api": null
+      },
+      "externalUrl": null,
+      "startCmd": "/home/homea/apps/daily/fincept-terminal/start.sh",
+      "stopCmd": "/home/homea/apps/daily/fincept-terminal/stop.sh",
+      "openPath": "/",
+      "createdAt": "2026-11-07",
+      "updatedAt": "2026-11-07",
+      "referenceUrl": "https://github.com/Fincept-Corporation/FinceptTerminal",
+      "notes": "【安裝 — 冇 sudo】官方 .deb 用 dpkg-deb -x 解到 app 目錄（唔系統安裝），所以 Qt6 modules 要行 LD_LIBRARY_PATH。\n  來源: https://github.com/Fincept-Corporation/FinceptTerminal/releases/tag/v4.5.1 (FinceptTerminal-4.5.1-linux-x64.deb, 55.2 MB)\n  解包: dpkg-deb -x FinceptTerminal-4.5.1-linux-x64.deb /tmp/x && cp -a /tmp/x/usr/. <app dir>/\n  補 Qt6 modules（apt download + extract，唔使 root）：\n    libqt6charts6 libqt6multimedia6 libqt6multimediawidgets6 libqt6sql6 libqt6websockets6 libqt6openglwidgets6 libqt6sql6-sqlite\n  → lib/ 放 .so，plugins/sqldrivers/ 放 libqsqlite.so\n【啟動關鍵】start.sh 設：LD_LIBRARY_PATH、QT_PLUGIN_PATH、XDG_RUNTIME_DIR、DISPLAY（搵 /tmp/.X11-unix/X*）、XAUTHORITY（搵 ~/.mutter-Xwaylandauth.*）、WAYLAND_DISPLAY、QT_QPA_PLATFORM（wayland 或 xcb）。XWayland 冇 XAUTHORITY 會 exit 127（'Could not open X display'）。\n【已驗證】視窗 1853×1010 正常開啟，走到「Set PIN」同 profile 設定頁（System Online v3.5.3）。AI 權杖要自己填（支援 DeepSeek／Ollama 等）。\n【注意】app 啟動時會自動開一個 Chrome 分頁（fincept.in onboarding），係佢自己行為，唔係 bug。【授權】AGPL-3.0 open build 免費，商用要留意 copyleft。\n【AI API key 已配置 — 2026-11-07】\n  Provider: deepseek / deepseek-chat / https://api.deepseek.com/v1\n  Key 來源: ~/.openclaw/keys/deepseek.key（同一把 key，OpenCode 亦喺用）\n  已停用 fincept provider（佢要註冊帳戶，否則 authentication_error: invalid api key）。\n  設定寫入 ~/.local/share/com.fincept.terminal/data/fincept.db 嘅 llm_configs + llm_profiles 表。\n  Helper: ~/apps/bin/fincept-set-llm（--show / --test / --provider … --key-file …）\n  換 provider（例：MiniMax CN 中國區 endpoint）:\n    ~/apps/bin/fincept-set-llm --provider minimax-cn --key-file ~/.config/opencode/minimax-cn.key \\\n      --base-url https://api.minimaxi.com/v1 --model MiniMax-M3\n  改完要重啟 app。DB 每次改前自動備份成 fincept.db.bak-<timestamp>。\n  已驗證: app log 顯示 provider=deepseek model=deepseek-chat tools_enabled=TRUE，零錯誤；\n  真實 completion request 回應 FINCEPT_LLM_OK。\n  ⚠️ key 明文存喺 app 自己個 DB（app 原本就係咁設計）。\n  ⚠️ GUI 設定亦可做（Settings → LLM Configuration），但同一個 DB。\n  ⚠️ app 啟動時會自動開一個 Chrome 分頁去 fincept.in 推廣頁 —— 係佢自己行為。\n【可由 Hermes 直接調用 — 2026-11-07】\n  Fincept 內置 1,131 個 Python module（33 萬行）做分析引擎，每個都係普通 CLI：\n  <command> <json> 讀 argv，JSON 寫 stdout。所以唔使經 GUI 都可以用。\n  Wrapper: ~/apps/bin/fincept-analytics <family> <command> '<json>'\n    financial    get_key_metrics | analyze_income | analyze_balance | analyze_cashflow | analyze_comprehensive\n    quant        trend_analysis | stationarity_test | arima_model | forecasting | supervised_learning |\n                 unsupervised_learning | model_evaluation | feature_engineering | validate_data\n    statsmodels  arima | sarimax | exponential_smoothing | stl_decompose | adf_test | kpss_test |\n                 acf | pacf | ljung_box | ols | regression_diagnostics | logit | glm | ttest_* |\n                 jarque_bera | descriptive | ttest_power | pca | kde | lowess\n  JSON 格式（financial）：{company:{ticker,name,sector,industry,country,currency}, period:{period_end,period_type,fiscal_year}, financials:{flat 欄位}}。\n  financials 係 FLAT（revenue / total_assets / total_equity 直接放喺 financials 度，唔係 income_statement/balance_sheet 分層）。最少要 revenue + total_assets + total_equity。\n  實測：假數據餵入 → 毛利率 47.2%、Overall Financial Health 76.8、Liquidity/Profitability/Efficiency/Leverage/Quality 五維評分；trend_analysis slope 3.19；descriptive mean 5.5 std 2.87。\n  ⚠️ 用喺 5S：可以餵你 DB 嘅真實數據出獨立財務健康評分做交叉驗證，但 5S 閘門口徑仍然只跟 calc_gates.py（Fincept 唔會改變鎖定規則）。\n【同 stock.keithleehk.com 嘅整合點 — 2026-11-07 實測】\n  stock 網站源碼 = /home/homea/apps/daily/hkex-filings（Flask, 118 個 .py）。\n  已有 calc/invest.py：dcf, kelly, stop_loss_take_profit, sharpe, rsi, macd, bollinger,\n  black_scholes, option_greeks, warrant, cbbc, var_historical。\n  Fincept 多出、stock 網站未有：\n    1) Trading Comps（可比公司分析）: Analytics/corporateFinance/valuation/trading_comps.py\n       → find_comparables / build_comp_table / regression_analysis / apply_trading_multiples\n    2) Precedent Transactions（前併購交易）: valuation/precedent_transactions.py\n    3) Football Field 估值圖: valuation/football_field.py\n    4) LBO / M&A 模型 / Synergies / Fairness Opinion / Startup Valuation\n    5) Portfolio: portfolio_optimization, behavioral_finance, etf_analytics, active_management\n    6) Quant: arima/sarimax/stationarity/pca/ols/logit/glm, 18 模組 QuantLib wrapper\n    7) Backtesting: vectorbt provider\n  數據互補（實測，2026-11-07）：\n    AAStocks (stock 網站 aastocks_pe.py) → 騰訊 P/E = 15.239\n    yfinance (Fincept trading_comps)     → 騰訊 EV/EBITDA = 12.77, 收入增長 11%\n    Fincept 嘅 yfinance 攞唔到港股 P/E（None），stock 網站嘅 AAStocks scraper 啱；\n    反過來 EV/EBITDA + growth + regression 係 stock 網站冇嘅。\n  ⚠️ Fincept yfinance 用美股 ticker 格式（0700.HK）；stock 網站用 5 位港股代號（00700）。\n  ⚠️ 5S 閘門口徑不變，仍然只跟 ~/5s/bin/calc_gates.py。",
+      "grokHint": "啟動: ~/apps/daily/fincept-terminal/start.sh（設好 LD_LIBRARY_PATH、DISPLAY、XAUTHORITY、QT_QPA_PLATFORM）。停止: stop.sh。LLM provider 設定: ~/apps/bin/fincept-set-llm --show / --test。改咗要重啟 app 先生效。 直接計數（唔使開 GUI）：~/apps/bin/fincept-analytics financial analyze_comprehensive '<json>'。LLM provider: ~/apps/bin/fincept-set-llm --show/--test。",
+      "lastChange": "2026-11-07 安裝 Fincept Terminal v4.5.1（免 sudo extract + 本地 Qt6 libs + XWayland wrapper）；配置 DeepSeek AI provider（實測 request 成功）；App Hub 加卡"
+    },
+    {
+      "id": "ai-village-explorer",
+      "name": "AI Village Explorer",
+      "nameZh": "AI 村互動圖譜",
+      "path": "/home/homea/apps/daily/ai-village-explorer",
+      "category": "daily",
+      "lifecycle": "active",
+      "description": "抓 theaidigest.org/village 全部 58 個 agent 嘅互動記錄（10.9 萬條），畫互動有向圖、Heatmap、時間序列、執行力排名；出 CSV dump。Port 5215。",
+      "stack": "Node.js + Express + 原生 SVG 前端",
+      "tags": [
+        "research",
+        "data-viz",
+        "ai-village",
+        "graph",
+        "app-hub"
+      ],
+      "ports": {
+        "ui": 5215,
+        "api": 5215
+      },
+      "startCmd": "systemctl --user start ai-village-explorer",
+      "stopCmd": "systemctl --user stop ai-village-explorer",
+      "openPath": "/",
+      "createdAt": "2026-11-08",
+      "updatedAt": "2026-11-08",
+      "notes": "systemd user service ai-village-explorer.service。UI + API 同一 port 5215。資料喺 data/（graph.json 為主），抓取快取喺 data/cache/（~100MB，可刪）。",
+      "grokHint": "Open folder /home/homea/apps/daily/ai-village-explorer. Port 5215. systemctl --user status ai-village-explorer. 重抓: node scripts/scrape.js && node scripts/analyze.js"
+    }
+  ],
+  "hubUi": {
+    "dropdownTopIds": [
+      "tokyo-trip-v2",
+      "tradingagents",
+      "jiuwenswarm",
+      "ai-hub-https",
+      "hermes-bot",
+      "freeze-dashboard",
+      "ai-hub",
+      "hkex-filings",
+      "grok-mobile",
+      "lee-brain-dashboard"
+    ],
+    "pinnedBottomIds": [],
+    "customOrder": [],
+    "orderMode": "pinned"
+  }
+}
